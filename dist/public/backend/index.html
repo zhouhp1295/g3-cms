@@ -1,0 +1,184 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge,chrome=1"><meta name=renderer content=webkit><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel=icon href=/backend/favicon.ico><title>g3-cms 管理后台</title><!--[if lt IE 11]><script>window.location.href='/html/ie.html';</script><![endif]--><style>html,
+    body,
+    #app {
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+    }
+    .chromeframe {
+      margin: 0.2em 0;
+      background: #ccc;
+      color: #000;
+      padding: 0.2em 0;
+    }
+
+    #loader-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 999999;
+    }
+
+    #loader {
+      display: block;
+      position: relative;
+      left: 50%;
+      top: 50%;
+      width: 150px;
+      height: 150px;
+      margin: -75px 0 0 -75px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: #FFF;
+      -webkit-animation: spin 2s linear infinite;
+      -ms-animation: spin 2s linear infinite;
+      -moz-animation: spin 2s linear infinite;
+      -o-animation: spin 2s linear infinite;
+      animation: spin 2s linear infinite;
+      z-index: 1001;
+    }
+
+    #loader:before {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      right: 5px;
+      bottom: 5px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: #FFF;
+      -webkit-animation: spin 3s linear infinite;
+      -moz-animation: spin 3s linear infinite;
+      -o-animation: spin 3s linear infinite;
+      -ms-animation: spin 3s linear infinite;
+      animation: spin 3s linear infinite;
+    }
+
+    #loader:after {
+      content: "";
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      bottom: 15px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: #FFF;
+      -moz-animation: spin 1.5s linear infinite;
+      -o-animation: spin 1.5s linear infinite;
+      -ms-animation: spin 1.5s linear infinite;
+      -webkit-animation: spin 1.5s linear infinite;
+      animation: spin 1.5s linear infinite;
+    }
+
+
+    @-webkit-keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+
+    #loader-wrapper .loader-section {
+      position: fixed;
+      top: 0;
+      width: 51%;
+      height: 100%;
+      background: #7171C6;
+      z-index: 1000;
+      -webkit-transform: translateX(0);
+      -ms-transform: translateX(0);
+      transform: translateX(0);
+    }
+
+    #loader-wrapper .loader-section.section-left {
+      left: 0;
+    }
+
+    #loader-wrapper .loader-section.section-right {
+      right: 0;
+    }
+
+
+    .loaded #loader-wrapper .loader-section.section-left {
+      -webkit-transform: translateX(-100%);
+      -ms-transform: translateX(-100%);
+      transform: translateX(-100%);
+      -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+      transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+    }
+
+    .loaded #loader-wrapper .loader-section.section-right {
+      -webkit-transform: translateX(100%);
+      -ms-transform: translateX(100%);
+      transform: translateX(100%);
+      -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+      transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+    }
+
+    .loaded #loader {
+      opacity: 0;
+      -webkit-transition: all 0.3s ease-out;
+      transition: all 0.3s ease-out;
+    }
+
+    .loaded #loader-wrapper {
+      visibility: hidden;
+      -webkit-transform: translateY(-100%);
+      -ms-transform: translateY(-100%);
+      transform: translateY(-100%);
+      -webkit-transition: all 0.3s 1s ease-out;
+      transition: all 0.3s 1s ease-out;
+    }
+
+    .no-js #loader-wrapper {
+      display: none;
+    }
+
+    .no-js h1 {
+      color: #222222;
+    }
+
+    #loader-wrapper .load_title {
+      font-family: 'Open Sans';
+      color: #FFF;
+      font-size: 19px;
+      width: 100%;
+      text-align: center;
+      z-index: 9999999999999;
+      position: absolute;
+      top: 60%;
+      opacity: 1;
+      line-height: 30px;
+    }
+
+    #loader-wrapper .load_title span {
+      font-weight: normal;
+      font-style: italic;
+      font-size: 13px;
+      color: #FFF;
+      opacity: 0.5;
+    }</style><link href=/backend/static/css/chunk-libs.ea078ece.css rel=stylesheet><link href=/backend/static/css/app.ba8356cb.css rel=stylesheet></head><body><div id=app><div id=loader-wrapper><div id=loader></div><div class="loader-section section-left"></div><div class="loader-section section-right"></div><div class=load_title>正在加载系统资源，请耐心等待</div></div></div><script>(function(e){function c(c){for(var t,r,d=c[0],o=c[1],f=c[2],h=0,i=[];h<d.length;h++)r=d[h],Object.prototype.hasOwnProperty.call(u,r)&&u[r]&&i.push(u[r][0]),u[r]=0;for(t in o)Object.prototype.hasOwnProperty.call(o,t)&&(e[t]=o[t]);b&&b(c);while(i.length)i.shift()();return a.push.apply(a,f||[]),n()}function n(){for(var e,c=0;c<a.length;c++){for(var n=a[c],t=!0,r=1;r<n.length;r++){var d=n[r];0!==u[d]&&(t=!1)}t&&(a.splice(c--,1),e=o(o.s=n[0]))}return e}var t={},r={runtime:0},u={runtime:0},a=[];function d(e){return o.p+"static/js/"+({}[e]||e)+"."+{"chunk-003ec4ba":"c1abf824","chunk-2d0b2b28":"5a870f11","chunk-171ca186":"aa490910","chunk-2d0e2366":"68f2ed78","chunk-398c007b":"cb33cc69","chunk-58bd45b8":"3637701b","chunk-2d0f012d":"1bde8e38","chunk-2d217c9e":"8ec1968a","chunk-2d21a3bb":"8a51ac4c","chunk-2d22252c":"88a4fc08","chunk-2d238605":"8e8555c6","chunk-345dd7f2":"01f86f93","chunk-39413ce8":"7dd0ef83","chunk-3a08d90c":"56aa7b74","chunk-53a0a6c5":"679b5c88","chunk-55d183ec":"ef589b46","chunk-582b2a7a":"6ab97e21","chunk-5bd5f1ef":"bae630d2","chunk-17b3a1ca":"95274cd7","chunk-69440159":"c85f965d","chunk-89ecf426":"f5d219e2","chunk-9b2d5786":"c0406ec1","chunk-6a51e97f":"92bf574d","chunk-7d993ace":"67f3f915","chunk-7e67ce5b":"d214934d","chunk-c28ad000":"bbf3370e","chunk-d19c1a98":"ba957eb6"}[e]+".js"}function o(c){if(t[c])return t[c].exports;var n=t[c]={i:c,l:!1,exports:{}};return e[c].call(n.exports,n,n.exports,o),n.l=!0,n.exports}o.e=function(e){var c=[],n={"chunk-003ec4ba":1,"chunk-171ca186":1,"chunk-398c007b":1,"chunk-58bd45b8":1,"chunk-345dd7f2":1,"chunk-55d183ec":1,"chunk-6a51e97f":1,"chunk-7d993ace":1,"chunk-c28ad000":1};r[e]?c.push(r[e]):0!==r[e]&&n[e]&&c.push(r[e]=new Promise((function(c,n){for(var t="static/css/"+({}[e]||e)+"."+{"chunk-003ec4ba":"9509e19b","chunk-2d0b2b28":"31d6cfe0","chunk-171ca186":"f59a1d86","chunk-2d0e2366":"31d6cfe0","chunk-398c007b":"8ed305da","chunk-58bd45b8":"8ed305da","chunk-2d0f012d":"31d6cfe0","chunk-2d217c9e":"31d6cfe0","chunk-2d21a3bb":"31d6cfe0","chunk-2d22252c":"31d6cfe0","chunk-2d238605":"31d6cfe0","chunk-345dd7f2":"bbc9fa95","chunk-39413ce8":"31d6cfe0","chunk-3a08d90c":"31d6cfe0","chunk-53a0a6c5":"31d6cfe0","chunk-55d183ec":"4e8637e7","chunk-582b2a7a":"31d6cfe0","chunk-5bd5f1ef":"31d6cfe0","chunk-17b3a1ca":"31d6cfe0","chunk-69440159":"31d6cfe0","chunk-89ecf426":"31d6cfe0","chunk-9b2d5786":"31d6cfe0","chunk-6a51e97f":"5a402cd2","chunk-7d993ace":"db631dbc","chunk-7e67ce5b":"31d6cfe0","chunk-c28ad000":"17fbdb6b","chunk-d19c1a98":"31d6cfe0"}[e]+".css",u=o.p+t,a=document.getElementsByTagName("link"),d=0;d<a.length;d++){var f=a[d],h=f.getAttribute("data-href")||f.getAttribute("href");if("stylesheet"===f.rel&&(h===t||h===u))return c()}var i=document.getElementsByTagName("style");for(d=0;d<i.length;d++){f=i[d],h=f.getAttribute("data-href");if(h===t||h===u)return c()}var b=document.createElement("link");b.rel="stylesheet",b.type="text/css",b.onload=c,b.onerror=function(c){var t=c&&c.target&&c.target.src||u,a=new Error("Loading CSS chunk "+e+" failed.\n("+t+")");a.code="CSS_CHUNK_LOAD_FAILED",a.request=t,delete r[e],b.parentNode.removeChild(b),n(a)},b.href=u;var k=document.getElementsByTagName("head")[0];k.appendChild(b)})).then((function(){r[e]=0})));var t=u[e];if(0!==t)if(t)c.push(t[2]);else{var a=new Promise((function(c,n){t=u[e]=[c,n]}));c.push(t[2]=a);var f,h=document.createElement("script");h.charset="utf-8",h.timeout=120,o.nc&&h.setAttribute("nonce",o.nc),h.src=d(e);var i=new Error;f=function(c){h.onerror=h.onload=null,clearTimeout(b);var n=u[e];if(0!==n){if(n){var t=c&&("load"===c.type?"missing":c.type),r=c&&c.target&&c.target.src;i.message="Loading chunk "+e+" failed.\n("+t+": "+r+")",i.name="ChunkLoadError",i.type=t,i.request=r,n[1](i)}u[e]=void 0}};var b=setTimeout((function(){f({type:"timeout",target:h})}),12e4);h.onerror=h.onload=f,document.head.appendChild(h)}return Promise.all(c)},o.m=e,o.c=t,o.d=function(e,c,n){o.o(e,c)||Object.defineProperty(e,c,{enumerable:!0,get:n})},o.r=function(e){"undefined"!==typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},o.t=function(e,c){if(1&c&&(e=o(e)),8&c)return e;if(4&c&&"object"===typeof e&&e&&e.__esModule)return e;var n=Object.create(null);if(o.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:e}),2&c&&"string"!=typeof e)for(var t in e)o.d(n,t,function(c){return e[c]}.bind(null,t));return n},o.n=function(e){var c=e&&e.__esModule?function(){return e["default"]}:function(){return e};return o.d(c,"a",c),c},o.o=function(e,c){return Object.prototype.hasOwnProperty.call(e,c)},o.p="/backend/",o.oe=function(e){throw console.error(e),e};var f=window["webpackJsonp"]=window["webpackJsonp"]||[],h=f.push.bind(f);f.push=c,f=f.slice();for(var i=0;i<f.length;i++)c(f[i]);var b=h;n()})([]);</script><script src=/backend/static/js/chunk-elementUI.61e0052a.js></script><script src=/backend/static/js/chunk-libs.9382668d.js></script><script src=/backend/static/js/app.ec4f9a6c.js></script></body></html>

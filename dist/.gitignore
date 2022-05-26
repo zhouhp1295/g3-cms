@@ -1,0 +1,7 @@
+.install
+upload
+log
+conf/app.ini
+*.bak
+*.exe
+ge-cms
