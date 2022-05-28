@@ -1,6 +1,7 @@
 package install
 
 import (
+	"database/sql"
 	"github.com/gin-gonic/gin"
 	"github.com/zhouhp1295/g3-cms/boot"
 	"github.com/zhouhp1295/g3-cms/modules"
@@ -115,14 +116,33 @@ func testConn(form formData) (bool, string) {
 		Password: form.DatabasePwd,
 		Name:     form.DatabaseName,
 	}
+	if cfg.Type == boot.SQLite3 {
+		dbpath := boot.AssetPath(cfg.Name + ".db")
+
+		defer func(name string) {
+			_ = os.Remove(name)
+		}(dbpath)
+
+		if utils.IsExist(dbpath) {
+			return false, "数据库文件已存在"
+		}
+	}
 	db, err := boot.TestDatabaseConn(cfg)
 	if err != nil {
 		return false, err.Error()
 	}
 	sqlDb, err := db.DB()
-	if err == nil {
-		_ = sqlDb.Close()
+
+	defer func(sqlDb *sql.DB) {
+		if sqlDb != nil {
+			_ = sqlDb.Close()
+		}
+	}(sqlDb)
+
+	if err != nil {
+		return false, err.Error()
 	}
+
 	return true, "连接成功"
 }
 

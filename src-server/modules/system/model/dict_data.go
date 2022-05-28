@@ -4,11 +4,11 @@ import "github.com/zhouhp1295/g3/crud"
 
 type SysDictData struct {
 	crud.BaseModel
-	Label     string `gorm:"TYPE:VARCHAR(100);COMMENT:'字典标签'"  json:"label" form:"label"`
-	Code      string `gorm:"TYPE:VARCHAR(100);COMMENT:'字典类型'" json:"code" form:"code"`
-	Value     string `gorm:"TYPE:VARCHAR(100);COMMENT:'字典键值'" json:"value" form:"value"`
-	IsDefault string `gorm:"TYPE:CHAR(1);NOT NULL;DEFAULT:'0';COMMENT:'状态:0=NO 1=YES'" json:"isDefault"  form:"isDefault"`
-	Sort      int    `gorm:"NOT NULL;DEFAULT:0;COMMENT:'排序'" json:"sort" form:"sort"`
+	Label     string `gorm:"TYPE:VARCHAR(100);COMMENT:字典标签"  json:"label" form:"label"`
+	Code      string `gorm:"TYPE:VARCHAR(100);COMMENT:字典类型" json:"code" form:"code"`
+	Value     string `gorm:"TYPE:VARCHAR(100);COMMENT:字典键值" json:"value" form:"value"`
+	IsDefault string `gorm:"TYPE:CHAR(1);NOT NULL;DEFAULT:0;COMMENT:状态 0=NO 1=YES" json:"isDefault"  form:"isDefault"`
+	Sort      int    `gorm:"NOT NULL;DEFAULT:0;COMMENT:排序" json:"sort" form:"sort"`
 	crud.TailColumns
 }
 

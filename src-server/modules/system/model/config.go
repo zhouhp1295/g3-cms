@@ -6,9 +6,9 @@ import (
 
 type SysConfig struct {
 	crud.BaseModel
-	Name  string `gorm:"TYPE:VARCHAR(100);COMMENT:'配置名'" json:"name" form:"name" query:"like"`
-	Code  string `gorm:"TYPE:VARCHAR(100);COMMENT:'代码'"  json:"code" form:"code" query:"like"`
-	Value string `gorm:"TYPE:VARCHAR(100);COMMENT:'值'"  json:"value" form:"value"`
+	Name  string `gorm:"TYPE:VARCHAR(100);COMMENT:配置名" json:"name" form:"name" query:"like"`
+	Code  string `gorm:"TYPE:VARCHAR(100);COMMENT:代码"  json:"code" form:"code" query:"like"`
+	Value string `gorm:"TYPE:VARCHAR(100);COMMENT:值"  json:"value" form:"value"`
 	crud.TailColumns
 }
 

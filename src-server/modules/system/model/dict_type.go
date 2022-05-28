@@ -4,8 +4,8 @@ import "github.com/zhouhp1295/g3/crud"
 
 type SysDictType struct {
 	crud.BaseModel
-	Name string `gorm:"TYPE:VARCHAR(100);COMMENT:'字典名称'" json:"name" form:"name"`
-	Code string `gorm:"TYPE:VARCHAR(100);COMMENT:'字典编号'" json:"code" form:"code"`
+	Name string `gorm:"TYPE:VARCHAR(100);COMMENT:字典名称" json:"name" form:"name"`
+	Code string `gorm:"TYPE:VARCHAR(100);COMMENT:字典编号" json:"code" form:"code"`
 	crud.TailColumns
 }
 

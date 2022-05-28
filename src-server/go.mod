@@ -7,13 +7,15 @@ require (
 	github.com/json-iterator/go v1.1.12
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/pkg/errors v0.9.1
-	github.com/zhouhp1295/g3 v0.0.0-20220525114718-7800ee441241
+	github.com/zhouhp1295/g3 v0.0.0-20220528140933-592e58f4483d
 	github.com/zhouhp1295/lache v0.0.0-20220525114352-1654fe9fa351
 	go.beyondstorage.io/services/fs/v4 v4.0.0
 	go.beyondstorage.io/services/minio v0.3.0
 	go.beyondstorage.io/v5 v5.0.0
 	gopkg.in/ini.v1 v1.66.4
 	gorm.io/driver/mysql v1.3.3
+	gorm.io/driver/postgres v1.3.6
+	gorm.io/driver/sqlite v1.3.2
 	gorm.io/gorm v1.23.5
 	unknwon.dev/clog/v2 v2.2.0
 )
@@ -39,14 +41,23 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
+	github.com/jackc/pgconn v1.12.1 // indirect
+	github.com/jackc/pgio v1.0.0 // indirect
+	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgproto3/v2 v2.3.0 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
+	github.com/jackc/pgtype v1.11.0 // indirect
+	github.com/jackc/pgx/v4 v4.16.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/kevinburke/go-bindata v3.22.0+incompatible // indirect
 	github.com/klauspost/compress v1.13.5 // indirect
 	github.com/klauspost/cpuid v1.3.1 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
-	github.com/mattn/go-colorable v0.1.4 // indirect
+	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/mattn/go-sqlite3 v1.14.12 // indirect
 	github.com/minio/md5-simd v1.1.0 // indirect
 	github.com/minio/minio-go/v7 v7.0.15 // indirect
 	github.com/minio/sha256-simd v0.1.1 // indirect

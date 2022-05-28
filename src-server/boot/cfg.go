@@ -26,7 +26,6 @@ type DatabaseConfig struct {
 	User         string
 	Password     string
 	SSLMode      string `ini:"SSL_MODE"`
-	Path         string
 	MaxOpenConns int
 	MaxIdleConns int
 }

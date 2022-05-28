@@ -9,7 +9,7 @@
     </el-steps>
     <div class="form-body">
       <div class="form-steps">
-        <div v-if="activeStep == 1">
+        <div v-if="activeStep === 1">
           <el-form ref="step1form" :model="form" label-width="120px" :rules="step1rules" style="text-align: left;">
             <div class="form-step-title">数据库设置</div>
             <el-form-item label="数据库类型" style="text-align: left;" prop="databaseType" required>
@@ -22,9 +22,10 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <div v-if="form.databaseType != 'sqlite3'">
+            <div v-if="form.databaseType === 'mysql' || form.databaseType === 'postgres'">
               <el-form-item label="数据库主机" prop="databaseHost" required>
                 <el-input v-model="form.databaseHost"></el-input>
+                <div>示例: MySQL 127.0.0.1:3306, PostgreSQL 127.0.0.1:5432</div>
               </el-form-item>
               <el-form-item label="数据库用户" prop="databaseUser" required>
                 <el-input v-model="form.databaseUser"></el-input>
@@ -41,7 +42,7 @@
 <!--            </el-form-item>-->
           </el-form>
         </div>
-        <div v-if="activeStep == 2">
+        <div v-if="activeStep === 2">
           <el-form ref="step2form" :model="form" label-width="120px" :rules="step2rules">
             <div class="form-step-title">超级管理员设置</div>
             <el-form-item label="账户" prop="username" required>
@@ -52,14 +53,14 @@
             </el-form-item>
           </el-form>
         </div>
-        <div v-if="activeStep == maxStep">
+        <div v-if="activeStep === maxStep">
         </div>
       </div>
       <div class="form-footer">
-        <el-button type="warn" @click="handleTestConn"  v-loading.fullscreen.lock="fullscreenLoading" v-if="activeStep == 1">测试连接</el-button>
-        <el-button type="primary" @click="handlePre" v-if="activeStep != 1">上一步</el-button>
+        <el-button type="warn" @click="handleTestConn"  v-loading.fullscreen.lock="fullscreenLoading" v-if="activeStep === 1">测试连接</el-button>
+        <el-button type="primary" @click="handlePre" v-if="activeStep !== 1">上一步</el-button>
         <el-button type="primary" @click="handleNext" v-if="activeStep < maxStep-1">下一步</el-button>
-        <el-button type="primary" @click="handleSubmit" v-loading.fullscreen.lock="fullscreenLoading" v-if="activeStep == maxStep-1">开始安装</el-button>
+        <el-button type="primary" @click="handleSubmit" v-loading.fullscreen.lock="fullscreenLoading" v-if="activeStep === maxStep-1">开始安装</el-button>
       </div>
     </div>
 
@@ -88,12 +89,20 @@ export default {
       fullscreenLoading: false,
       databaseOptions: [
         {
+          "label": "SQLite3",
+          "value": "sqlite3",
+        },
+        {
           "label": "MySQL",
           "value": "mysql",
+        },
+        {
+          "label": "PostgreSQL",
+          "value": "postgres",
         }
       ],
       form: {
-        databaseType: "mysql",
+        databaseType: "sqlite3",
         databaseHost: undefined,
         databaseUser: undefined,
         databasePwd: undefined,

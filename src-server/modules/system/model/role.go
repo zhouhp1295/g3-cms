@@ -6,10 +6,10 @@ import (
 
 type SysRole struct {
 	crud.BaseModel
-	Name       string `gorm:"NOT NULL;TYPE:VARCHAR(20);COMMENT:'角色名'" json:"name" form:"name"  query:"like"`
-	Identifier string `gorm:"UNIQUE;TYPE:VARCHAR(20);COMMENT:'角色标识符'" json:"identifier" form:"identifier" query:"like"`
-	Sort       int    `gorm:"NOT NULL;DEFAULT:0;COMMENT:'排序'" json:"sort" form:"sort"`
-	Menus      string `gorm:"TYPE:TEXT;COMMENT:'权限菜单'" json:"menus" form:"menus"`
+	Name       string `gorm:"NOT NULL;TYPE:VARCHAR(20);COMMENT:角色名" json:"name" form:"name"  query:"like"`
+	Identifier string `gorm:"UNIQUE;TYPE:VARCHAR(20);COMMENT:角色标识符" json:"identifier" form:"identifier" query:"like"`
+	Sort       int    `gorm:"NOT NULL;DEFAULT:0;COMMENT:排序" json:"sort" form:"sort"`
+	Menus      string `gorm:"TYPE:TEXT;COMMENT:权限菜单" json:"menus" form:"menus"`
 	crud.TailColumns
 }
 
