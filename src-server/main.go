@@ -58,6 +58,13 @@ func main() {
 		dao.SysUserDao.CreateSuperUser("admin", "123456")
 		//初始化权限
 		dao.SysRoleDao.RefreshRolePerms()
+	} else if boot.IsInstalled() {
+		//初始化数据库
+		boot.InitDatabase()
+		//同步表结构
+		modules.InitModulesDatabase()
+		//初始化权限
+		dao.SysRoleDao.RefreshRolePerms()
 	}
 	//绑定静态文件
 	boot.BindWebStatic()
