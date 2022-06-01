@@ -262,6 +262,8 @@ github.com/zhouhp1295/g3 v0.0.0-20220525114718-7800ee441241 h1:LLQIRx8WArnyqkaOU
 github.com/zhouhp1295/g3 v0.0.0-20220525114718-7800ee441241/go.mod h1:hR8HVJW0BPKlMeJ7rAXK3CEVTduU4H65ODWj/9eua/8=
 github.com/zhouhp1295/g3 v0.0.0-20220528140933-592e58f4483d h1:JYzGxS1eze4h/vzDhZKvnF/9w6RjOc4n3RqWyd1sfBg=
 github.com/zhouhp1295/g3 v0.0.0-20220528140933-592e58f4483d/go.mod h1:hR8HVJW0BPKlMeJ7rAXK3CEVTduU4H65ODWj/9eua/8=
+github.com/zhouhp1295/g3 v0.0.0-20220601121904-823dd53511af h1:h6lC2nDaT8mPpaCSxi4M5HhESHY554bHJRhkSlplHM8=
+github.com/zhouhp1295/g3 v0.0.0-20220601121904-823dd53511af/go.mod h1:hR8HVJW0BPKlMeJ7rAXK3CEVTduU4H65ODWj/9eua/8=
 github.com/zhouhp1295/lache v0.0.0-20220525114352-1654fe9fa351 h1:cZHtwgjlhtOuzKTnsBdO02fiCU0FbLh73NbWkETTkaI=
 github.com/zhouhp1295/lache v0.0.0-20220525114352-1654fe9fa351/go.mod h1:XmS+gLAoC4chvjty5j7SAyMDqT11TlFuo2vDfWSM0ao=
 go.beyondstorage.io/credential v1.0.0 h1:xJ7hBXmeUE0+rbW+RYZSz4KgHpXvc9g7oQ56f8dXdBk=

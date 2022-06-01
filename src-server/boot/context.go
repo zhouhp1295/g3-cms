@@ -47,7 +47,14 @@ func newApiRouter(r *gin.Engine) *GinRouter {
 	}
 	apiRouter.JwtAuth = auth.NewJwt("/api", apiRouter.Perms, JwtCfg.Secret, JwtCfg.ExpiredSeconds)
 
-	apiRouter.Use(apiRouter.JwtAuth.Authentication)
+	apiRouter.Use(func(ctx *gin.Context) {
+		if !IsInstalled() && !strings.HasPrefix(ctx.Request.RequestURI, "/api/common") {
+			ctx.AbortWithStatusJSON(http.StatusOK, gin.H{"code": http.StatusInternalServerError, "message": "系统未初始化"})
+			ctx.Abort()
+			return
+		}
+		ctx.Next()
+	}, apiRouter.JwtAuth.Authentication)
 
 	return apiRouter
 }

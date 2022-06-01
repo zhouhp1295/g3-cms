@@ -16,6 +16,12 @@ import (
 	"unknwon.dev/clog/v2"
 )
 
+var (
+	UseMysql      = false
+	UseSQLite3    = false
+	UsePostgreSQL = false
+)
+
 const (
 	MySQL      = "mysql"
 	SQLite3    = "sqlite3"
@@ -148,8 +154,11 @@ func initGormDB(w logger.Writer) {
 	switch DatabaseCfg.Type {
 	case MySQL:
 		db = db.Set("gorm:table_options", "ENGINE=InnoDB").Session(&gorm.Session{})
+		UseMysql = true
 	case PostgreSQL:
+		UsePostgreSQL = true
 	case SQLite3:
+		UseSQLite3 = true
 	default:
 		panic("未定义的数据库类型:" + DatabaseCfg.Type)
 	}

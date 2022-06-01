@@ -24,6 +24,6 @@ func handleUploadImage(ctx *gin.Context) {
 		return
 	}
 	commonApi.SuccessData(ctx, gin.H{
-		"url": "/" + filePath,
+		"url": filePath,
 	})
 }

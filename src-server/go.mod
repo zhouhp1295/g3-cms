@@ -7,7 +7,7 @@ require (
 	github.com/json-iterator/go v1.1.12
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/pkg/errors v0.9.1
-	github.com/zhouhp1295/g3 v0.0.0-20220528140933-592e58f4483d
+	github.com/zhouhp1295/g3 v0.0.0-20220601121904-823dd53511af
 	github.com/zhouhp1295/lache v0.0.0-20220525114352-1654fe9fa351
 	go.beyondstorage.io/services/fs/v4 v4.0.0
 	go.beyondstorage.io/services/minio v0.3.0
