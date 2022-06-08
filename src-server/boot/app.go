@@ -80,7 +80,7 @@ var (
 // HomeDir 工作目录
 func HomeDir() string {
 	homeDirOnce.Do(func() {
-		homeDir = os.Getenv("g3_devel_dist")
+		homeDir = os.Getenv("g3_cms_dist")
 		if homeDir != "" {
 			return
 		}
