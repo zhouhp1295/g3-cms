@@ -1,0 +1,12 @@
+{{if len(articles)}}
+{{range article := articles}}
+  {{include "article.html" article}}
+{{end}}
+<div class="pagination">
+  {{include "pagination.html"}}
+</div>
+{{else}}
+<div class="pagination">
+  <p>暂无数据</p>
+</div>
+{{end}}

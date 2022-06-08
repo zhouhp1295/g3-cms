@@ -1,4 +1,8 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 h1:sR+/8Yb4slttB4vD+b9btVEnWgL3Q00OBTzVT8B9C0c=
+github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53/go.mod h1:+3IMCy2vIlbG1XG/0ggNQv0SvxCAIpPM5b1nCz56Xno=
+github.com/CloudyKit/jet v2.1.2+incompatible h1:ybZoYzMBdoijK6I+Ke3vg9GZsmlKo/ZhKdNMWz0P26c=
+github.com/CloudyKit/jet v2.1.2+incompatible/go.mod h1:HPYO+50pSWkPoj9Q/eq0aRGByCL6ScRlUmiEX5Zgm+w=
 github.com/Masterminds/semver/v3 v3.1.1 h1:hLg3sBzpNErnxhQtUy/mmLR2I9foDujNK030IGemrRc=
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=
 github.com/Xuanwo/gg v0.2.0 h1:axbZmA0qmidh3s9PA86GqvBXVQ3o7Bbpf0aImGtlimA=
@@ -258,12 +262,10 @@ github.com/urfave/cli/v2 v2.3.0/go.mod h1:LJmUH05zAU44vOAcrfzZQKsZbVcdbOG8rtL3/X
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/zenazn/goji v0.9.0/go.mod h1:7S9M489iMyHBNxwZnk9/EHS098H4/F6TATF2mIxtB1Q=
-github.com/zhouhp1295/g3 v0.0.0-20220525114718-7800ee441241 h1:LLQIRx8WArnyqkaOUhiZbP4cYq7IKDQ4dNJy6XYv/ms=
-github.com/zhouhp1295/g3 v0.0.0-20220525114718-7800ee441241/go.mod h1:hR8HVJW0BPKlMeJ7rAXK3CEVTduU4H65ODWj/9eua/8=
-github.com/zhouhp1295/g3 v0.0.0-20220528140933-592e58f4483d h1:JYzGxS1eze4h/vzDhZKvnF/9w6RjOc4n3RqWyd1sfBg=
-github.com/zhouhp1295/g3 v0.0.0-20220528140933-592e58f4483d/go.mod h1:hR8HVJW0BPKlMeJ7rAXK3CEVTduU4H65ODWj/9eua/8=
 github.com/zhouhp1295/g3 v0.0.0-20220601121904-823dd53511af h1:h6lC2nDaT8mPpaCSxi4M5HhESHY554bHJRhkSlplHM8=
 github.com/zhouhp1295/g3 v0.0.0-20220601121904-823dd53511af/go.mod h1:hR8HVJW0BPKlMeJ7rAXK3CEVTduU4H65ODWj/9eua/8=
+github.com/zhouhp1295/g3 v0.0.0-20220608140340-af9bb9e65a62 h1:jY1LlY3NqWqhg2VEg2WRI52GolllEv4VsZb2cfBsnK8=
+github.com/zhouhp1295/g3 v0.0.0-20220608140340-af9bb9e65a62/go.mod h1:hR8HVJW0BPKlMeJ7rAXK3CEVTduU4H65ODWj/9eua/8=
 github.com/zhouhp1295/lache v0.0.0-20220525114352-1654fe9fa351 h1:cZHtwgjlhtOuzKTnsBdO02fiCU0FbLh73NbWkETTkaI=
 github.com/zhouhp1295/lache v0.0.0-20220525114352-1654fe9fa351/go.mod h1:XmS+gLAoC4chvjty5j7SAyMDqT11TlFuo2vDfWSM0ao=
 go.beyondstorage.io/credential v1.0.0 h1:xJ7hBXmeUE0+rbW+RYZSz4KgHpXvc9g7oQ56f8dXdBk=

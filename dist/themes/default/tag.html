@@ -1,0 +1,11 @@
+{{extends "layouts/main.html"}}
+{{block bodyCss()}}home blog{{end}}
+{{block bodyContent()}}
+
+<div class="title">
+    <h3>{{tag.Title}}</h3>
+</div>
+
+{{include "components/articles.html"}}
+
+{{end}}<!--end-->

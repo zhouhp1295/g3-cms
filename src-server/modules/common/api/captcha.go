@@ -13,7 +13,7 @@ func init() {
 
 func handleCaptcha(ctx *gin.Context) {
 	captchaId, captchaBase64 := service.CaptchaService.GetStringImg()
-	commonApi.SuccessData(ctx, gin.H{
+	CommonApi.SuccessData(ctx, gin.H{
 		"id":     captchaId,
 		"base64": captchaBase64,
 	})

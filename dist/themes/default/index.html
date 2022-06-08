@@ -1,0 +1,94 @@
+{{extends "layouts/main.html"}}
+{{block bodyCss()}}home blog{{end}}
+
+{{block bodyContent()}}
+<!--Banner-->
+{{if len(banners)}}
+<div id="homeslider" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        {{range i,v := banners}}
+        <li data-target="#homeslider" data-slide-to="{{i}}" {{if i == 0}}class="active"{{end}}></li>
+        {{end}}
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        {{range i,v := banners}}
+        <div class="item {{if i == 0}}active{{end}}">
+            <a target="_blank" href="{{url(v.Url)}}">
+                <img src="{{v.Cover}}" alt="{{v.Title}}" class="banner" {{include "components/errimg.html"}}>
+            </a>
+        </div>
+        {{end}}
+    </div>
+    <a class="left carousel-control" href="#homeslider" role="button" data-slide="prev">
+        <i class="fa fa-angle-left"></i>
+    </a>
+    <a class="right carousel-control" href="#homeslider" role="button" data-slide="next">
+        <i class="fa fa-angle-right"></i>
+    </a>
+</div>
+{{end}}
+
+<!--热点: 第一条-->
+{{if len(topArticles)}}
+{{article := topArticles[0]}}
+<article class="excerpt-see excerpt-see-index">
+    <h2>
+        <a class="red">【今日头条】</a>
+        <a href="{{articleUrl(article.Id)}}" title="{{article.Title}}" target="_blank">{{article.Title}}</a>
+    </h2>
+    <p class="note">
+        <a href="{{articleUrl(article.Id)}}" target="_blank">{{article.Excerpt}}[详细]</a>
+    </p>
+</article>
+{{end}}
+<!--热点: 更多-->
+{{if len(topArticles) > 1}}
+<div class="top_box">
+    <ul>
+        {{range i,article := topArticles}}
+        {{if i > 0}}
+        <li>
+            {{if len(article.Cover)}}
+            <a href="{{articleUrl(article.Id)}}" title="{{article.Title}}" target="_blank" class="thum">
+                <img alt="{{article.Title}}" src="{{article.Cover}}" {{include "components/errimg.html"}}>
+            </a>
+            {{end}}
+            <h4><a href="{{articleUrl(article.Id)}}" title="{{article.Title}}" target="_blank">{{article.Title}}</a></h4>
+            <p class="note">{{article.Excerpt}}</p>
+        </li>
+        {{end}}
+        {{end}}
+    </ul>
+</div>
+{{end}}
+
+<!--新闻列表-->
+<div class="title">
+    <h3><a href="{{url(`/latest.html`)}}" title="最新发布">最新发布</a></h3>
+    {{if isset(cfg.indexCategories) && len(cfg.indexCategories)}}
+    <ul class="more">
+        {{range category := cfg.indexCategories }}
+        <li><a href="{{categoryUrl(category.Id)}}" target="_blank">{{category.Title}}</a></li>
+        {{end}}
+    </ul>
+    {{end}}
+</div>
+
+{{if len(latestArticles)}}
+{{range article := latestArticles}}
+    {{include "components/article.html" article}}
+{{end}}<!--range end-->
+<div class="pagination">
+    <ul>
+        <li class="active" style="background:#61b3e6;">
+            <a href='{{url(`/latest.html`)}}' style="font-size:16px;cursor: pointer; color:#fff;">查看更多资讯</a>
+        </li>
+    </ul>
+</div>
+{{else}}<!--if else-->
+<div class="pagination">
+    <p>暂无数据</p>
+</div>
+{{end}}<!--if end-->
+
+{{end}}<!--end-->

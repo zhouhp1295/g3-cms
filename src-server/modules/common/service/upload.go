@@ -19,15 +19,17 @@ var UploadService = new(uploadService)
 
 func (service *uploadService) UploadImage(file *multipart.FileHeader) (filePath string, msg string, ok bool) {
 	fileType := file.Header.Get("Content-Type")
-	if fileType != "image/png" && fileType != "image/jpeg" {
-		msg = "文件格式错误, 仅支持: image/png、image/jpeg"
+	if fileType != "image/png" && fileType != "image/jpeg" && fileType != "image/x-icon" {
+		msg = "文件格式错误, 仅支持: image/png、image/jpeg、image/x-icon"
 		return
 	}
+
 	fileSize := float32(file.Size / 1024 / 1024)
 	if fileSize > boot.StorageCfg.MaxSize {
-		msg = "上传图片大小不能超过 2MB!"
+		msg = fmt.Sprintf("上传图片大小不能超过 %fMB!", boot.StorageCfg.MaxSize)
 		return
 	}
+
 	saveFilename, err := SaveUploadFile(file)
 	if err != nil {
 		msg = err.Error()
@@ -41,11 +43,13 @@ func (service *uploadService) UploadImage(file *multipart.FileHeader) (filePath 
 var ImagesTypes = []string{
 	"image/png",
 	"image/jpeg",
+	"image/x-icon",
 }
 
 var DefaultFileSuffix = map[string]string{
-	"image/png":  ".png",
-	"image/jpeg": ".jpg",
+	"image/png":    ".png",
+	"image/jpeg":   ".jpg",
+	"image/x-icon": ".ico",
 }
 
 func SaveUploadFile(file *multipart.FileHeader) (string, error) {

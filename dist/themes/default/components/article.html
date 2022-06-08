@@ -1,0 +1,21 @@
+{{if len(article.Cover)}}
+<article class="excerpt">
+    <a href='{{articleUrl(article.Id)}}' class='focus' target='_blank'>
+        <img alt='{{article.Title}}' class='thumb lazy' src='{{url(article.Cover)}}' {{include "errimg.html"}}/>
+    </a>
+{{else}}
+<article class="excerpt" style="padding: 20px; overflow: hidden;">
+{{end}}
+    <header>
+        <a href="{{categoryUrl(article.Category)}}" class="cat" target="_blank">{{article.CategoryName}}<i></i></a>
+        <h2><a href="{{articleUrl(article.Id)}}" title="{{article.Title}}" target="_blank">{{article.Title}}</a></h2>
+    </header>
+    <div class="meta">
+        <time><i class="fa fa-clock-o"></i>{{article.PublishedAt}}</time>
+        <span class="pv"><i class="fa fa-eye"></i>阅读({{article.NumRead}})</span>
+        {{if article.Writer > 0}}
+        <a class="pc" href="{{writerUrl(article.Writer)}}"><i class="fa fa-comments-o"></i>作者({{article.WriterName}})</a>
+        {{end}}
+    </div>
+    {{if len(article.Cover)}}<div class="note">{{article.Excerpt}}</div>{{end}}
+</article>

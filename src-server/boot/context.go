@@ -70,8 +70,6 @@ var ginCtxOnce sync.Once
 func BindWebStatic() {
 	GinCtx().Engine.Static("/backend", path.Join(HomeDir(), "public", "backend"))
 	GinCtx().Engine.Static("/upload", path.Join(HomeDir(), "upload"))
-	GinCtx().Engine.StaticFile("/", path.Join(HomeDir(), "public", "index.html"))
-	GinCtx().Engine.StaticFile("/index.html", path.Join(HomeDir(), "public", "index.html"))
 	GinCtx().Engine.StaticFile("/favicon.ico", path.Join(HomeDir(), "public", "favicon.ico"))
 }
 
@@ -89,6 +87,10 @@ func GinCtx() *ginContext {
 	})
 
 	return ginCtx
+}
+
+func WebPage(router string, handler gin.HandlerFunc) {
+	GinCtx().Engine.GET(router, handler)
 }
 
 func ApiGet(router string, handler gin.HandlerFunc, perms ...string) {

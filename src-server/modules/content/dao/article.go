@@ -14,6 +14,28 @@ var ContentArticleDao = &contentArticleDAO{
 	crud.BaseDao{Model: new(model.ContentArticle)},
 }
 
+type FrontArticleSimpleData struct {
+	Id           int64                  `json:"id"`
+	Title        string                 `json:"title"`
+	SeoTitle     string                 `json:"seoTitle"`
+	Cover        string                 `json:"cover"`
+	Excerpt      string                 `json:"excerpt"`
+	Writer       int64                  `json:"writer"`
+	WriterName   string                 `json:"writerName"`
+	NumRead      int64                  `json:"numRead"`
+	PublishedAt  string                 `json:"publishedAt"`
+	Category     int64                  `json:"category"`
+	CategoryName string                 `json:"categoryName"`
+	Tags         []helpers.SelectOption `json:"tags"`
+}
+
+type FrontArticleDetailData struct {
+	FrontArticleSimpleData
+	SeoKeywords    string `json:"seoKeywords"`
+	SeoDescription string `json:"seoDescription"`
+	Content        string `json:"content"`
+}
+
 func (dao *contentArticleDAO) AfterGet(m crud.ModelInterface) {
 	if _m, _ok := m.(*model.ContentArticle); _ok {
 		tagOptions := make([]helpers.SelectOption, 0)
@@ -101,3 +123,52 @@ func (dao *contentArticleDAO) AfterUpdate(m crud.ModelInterface) (ok bool, msg s
 //func (dao *contentArticleDAO) BeforeRemove(m crud.ModelInterface) (ok bool, msg string) {
 //	return
 //}
+
+func (dao *contentArticleDAO) FrontTopArticles() []FrontArticleSimpleData {
+	return getFrontTopArticlesFromCache()
+}
+
+func (dao *contentArticleDAO) FrontLatestArticles(page int) ([]FrontArticleSimpleData, crud.PageData) {
+	pageSize := 20
+
+	if page < 1 {
+		page = 1
+	}
+	var total int64
+	crud.DbSess().Where("status = ? and deleted  = ?").Table("content_article").Count(&total)
+	if total == 0 {
+		return make([]FrontArticleSimpleData, 0), crud.PageResult(page, pageSize, int(total))
+	}
+
+	articleRows := make([]model.ContentArticle, 0)
+	crud.DbSess().Where("status = ? and deleted  = ?", crud.FlagYes, crud.FlagNo).
+		Order("published_at desc").
+		Limit(pageSize).Offset((page - 1) * pageSize).
+		Find(&articleRows)
+
+	articles := make([]FrontArticleSimpleData, len(articleRows))
+
+	for i, article := range articleRows {
+		_data := FrontArticleSimpleData{
+			Id:       article.Id,
+			Title:    article.Title,
+			SeoTitle: article.SeoTitle,
+			Cover:    article.Cover,
+			Writer:   article.Writer,
+			NumRead:  article.NumRead,
+			Category: article.Category,
+		}
+
+		if len(_data.SeoTitle) == 0 {
+			_data.SeoTitle = _data.Title
+		}
+
+		_data.WriterName = getWriterName(_data.Writer)
+
+		_data.CategoryName = getCategoryName(_data.Category)
+
+		articles[i] = _data
+	}
+
+	return articles, crud.PageResult(page, pageSize, int(total))
+}

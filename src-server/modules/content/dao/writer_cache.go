@@ -9,6 +9,10 @@ import (
 	"time"
 )
 
+func clearAllWriterCache() {
+	boot.Lache.Delete("K-Content-Dao-Writer-SelectOptions")
+}
+
 func listWriterSelectOptions() []helpers.SelectOption {
 	searchRole := &model.ContentWriter{
 		TailColumns: crud.TailColumns{
@@ -45,4 +49,17 @@ func listWriterSelectOptionsFromCache() []helpers.SelectOption {
 		return options
 	}
 	return result
+}
+
+func getWriterName(writerId int64) string {
+	if writerId <= 0 {
+		return "佚名"
+	}
+	options := listWriterSelectOptionsFromCache()
+	for _, option := range options {
+		if option.Id == writerId {
+			return option.Label
+		}
+	}
+	return ""
 }

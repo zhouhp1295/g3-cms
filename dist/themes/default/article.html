@@ -1,0 +1,46 @@
+{{extends "layouts/main.html"}}
+{{block bodyCss()}}single single-post postid-6221 single-format-standard comment-open{{end}}
+{{block bodyContent()}}
+
+<header class="article-header">
+    <h1 class="article-title">{{article.Title}}</h1>
+    <div class="article-meta">
+        <span class="item">
+            作者:<a href="{{writerUrl(article.Writer)}}" target="_blank">{{article.WriterName}}</a>
+        </span>
+        <span class="item">{{article.PublishedAt}}</span>
+        <span class="item">
+            分类：<a href="{{categoryUrl(article.Category)}}" target="_blank">{{article.CategoryName}}</a>
+        </span>
+        <span class="item post-views" id="vvclick">
+            阅读({{article.NumRead}})
+        </span>
+    </div>
+</header>
+<article class="article-content">
+    {{if article.IsOriginal == "1" && isset(articleCopyright)}}
+    <p class="post-copyright">
+        {{articleCopyright|raw}}
+    </p>
+    {{end}}
+    {{article.Content|raw}}
+    {{if article.IsOriginal != "1" && isset(cfg.articleSuffix)}}
+    <p class="post-copyright">
+        {{cfg.articleSuffix}}
+    </p>
+    {{end}}
+    {{if article.IsOriginal == "1" && isset(articleCopyright)}}
+    <p class="post-copyright">
+        {{articleCopyright|raw}}
+    </p>
+    {{end}}
+</article>
+{{if len(article.SimpleTags)}}
+<div class="article-tags">标签：
+    {{range tag := article.SimpleTags}}
+    <a href='{{tagUrl(tag.Id)}}' target='_blank'>{{tag.Title}}</a>
+    {{end}}
+</div>
+{{end}}
+
+{{end}}<!--end-->

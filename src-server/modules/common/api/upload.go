@@ -14,16 +14,16 @@ func handleUploadImage(ctx *gin.Context) {
 	file, err := ctx.FormFile("file")
 	if err != nil {
 		boot.Logger.Error("handleUploadImage err = %s\n", err.Error())
-		commonApi.FailedMessage(ctx, err.Error())
+		CommonApi.FailedMessage(ctx, err.Error())
 		return
 	}
 	filePath, msg, ok := service.UploadService.UploadImage(file)
 	if !ok {
 		boot.Logger.Error("handleUploadImage err = %s\n", msg)
-		commonApi.FailedMessage(ctx, msg)
+		CommonApi.FailedMessage(ctx, msg)
 		return
 	}
-	commonApi.SuccessData(ctx, gin.H{
+	CommonApi.SuccessData(ctx, gin.H{
 		"url": filePath,
 	})
 }

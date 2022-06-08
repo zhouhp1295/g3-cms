@@ -1,0 +1,49 @@
+{{if len(friendLinks)}}
+<div class="branding branding-black">
+    <div class="container links">
+        <ul>
+            <strong>友情链接：</strong>
+            {{range friendLink := friendLinks}}
+            <a href="{{friendLink.Url}}" target="_blank">{{friendLink.Title}}</a>
+            {{end}}
+        </ul>
+    </div>
+</div>
+{{end}}
+<footer class="footer">
+    <div class="container">
+        {{if isset(cfg.copyright)}}<p>{{cfg.copyright}}</p>{{end}}
+        {{if isset(cfg.beian)}}
+        <p>
+            <a href="http://www.miitbeian.gov.cn/" target="_blank"
+               rel="nofollow" style="color: white;">
+                {{cfg.beian}}
+            </a>
+        </p>
+        {{end}}
+        {{if isset(cfg.trackCode)}}
+        <p>{{cfg.trackCode|raw}}<p>
+        {{end}}
+    </div>
+</footer>
+<script>
+    window.jsui = {
+        www: '',
+        uri: '/templets/default',
+        ver: '9.0.0'
+    };
+</script>
+<script type='text/javascript' src='{{host}}/themes/js/jquery.min.js'></script>
+<script type='text/javascript' src='{{host}}/themes/js/loader.js'></script>
+<script type='text/javascript' src='{{host}}/themes/js/main.js'></script>
+<script type='text/javascript' src='{{host}}/themes/js/lazyload.js'></script>
+<script id="cy_cmt_num" src="{{host}}/themes/js/plugins.list.count.js">
+</script>
+<script language="javascript">
+    $("img.lazy").lazyload({
+        effect : "fadeIn" //加载图片使用的效果(淡入)
+    });
+    $("img.lazy-r").lazyload({
+        effect : "fadeIn" //加载图片使用的效果(淡入)
+    });
+</script>

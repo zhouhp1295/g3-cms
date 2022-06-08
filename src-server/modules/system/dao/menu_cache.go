@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"fmt"
 	"github.com/zhouhp1295/g3-cms/boot"
 	"github.com/zhouhp1295/g3-cms/modules/system/model"
 	"github.com/zhouhp1295/g3/crud"
@@ -47,12 +46,12 @@ func listMenuTree() []helpers.TreeNode {
 	if len(allMenus) == 0 {
 		return []helpers.TreeNode{}
 	}
-	items := make([]helpers.TreeItem, len(allMenus))
+	items := make([]helpers.TreeOption, len(allMenus))
 	for i := 0; i < len(items); i++ {
-		items[i] = helpers.TreeItem{
-			Id:   fmt.Sprintf("%d", allMenus[i].Id),
-			Pid:  fmt.Sprintf("%d", allMenus[i].Pid),
-			Name: allMenus[i].Title,
+		items[i] = helpers.TreeOption{
+			Id:    allMenus[i].Id,
+			Pid:   allMenus[i].Pid,
+			Label: allMenus[i].Title,
 		}
 	}
 	return helpers.ToTree(items)

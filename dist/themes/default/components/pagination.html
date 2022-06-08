@@ -1,0 +1,7 @@
+<ul>
+    {{range pageItem := pageItems}}
+    <li>
+        <a  href="{{pageItem.Href}}" class="{{pageItem.Class}}" {{pageItem.Target}}>{{pageItem.Title}}</a>
+    </li>
+    {{end}}
+</ul>

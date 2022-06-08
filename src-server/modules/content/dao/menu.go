@@ -116,3 +116,14 @@ func (dao *contentMenuDAO) BeforeRemove(m crud.ModelInterface) (ok bool, msg str
 	ok, msg = dao.BeforeDelete(m)
 	return
 }
+
+type FrontMenuData struct {
+	Title string `json:"title"`
+	Url   string `json:"url"`
+	Icon  string `json:"icon"`
+	Sort  int    `json:"sort"`
+}
+
+func (dao *contentMenuDAO) FrontMenus() []FrontMenuData {
+	return getFrontAllMenusFromCache()
+}

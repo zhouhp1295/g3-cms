@@ -12,3 +12,14 @@ type contentBannerDAO struct {
 var ContentBannerDao = &contentBannerDAO{
 	crud.BaseDao{Model: new(model.ContentBanner)},
 }
+
+type FrontBannerData struct {
+	Title string `json:"title"`
+	Url   string `json:"url"`
+	Pic   string `json:"pic"`
+	Sort  int    `json:"sort"`
+}
+
+func (dao *contentBannerDAO) FrontBanners() []FrontBannerData {
+	return getFrontAllBannersFromCache()
+}

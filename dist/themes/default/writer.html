@@ -1,0 +1,25 @@
+{{extends "layouts/main.html"}}
+{{block bodyCss()}}home blog{{end}}
+
+{{block brand()}}
+<div class="branding branding-sm branding-primary branding-mt0 branding-mb"
+     style="background-image: url({{host}}/themes/img/beijing2.jpg);background-position: center center;">
+    <div class="container">
+        <div>
+            {{if isset(writer.Avatar) && len(writer.Avatar) > 0}}
+            <img src="{{url(writer.Avatar)}}"  class="avatar"/>
+            {{else}}
+            <img src="{{host}}/themes/img/avatar{{if writer.Sex == "1"}}1{{else}}2{{end}}.png"  class="avatar"/>
+            {{end}}
+        </div>
+        <h1>{{writer.Name}}</h1>
+        <div class="note">这个人很懒，什么都没有留下～</div>
+    </div>
+</div>
+{{end}}
+
+{{block bodyContent()}}
+
+{{include "components/articles.html"}}
+
+{{end}}<!--end-->

@@ -15,4 +15,5 @@ func InitModulesDatabase() {
 	//内容管理模块
 	content.SyncTables()
 	content.DoMigrate()
+	content.InitWeb()
 }

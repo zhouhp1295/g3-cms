@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=11,IE=10,IE=9,IE=8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-title" content="baidu.com">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <title>{{title}}</title>
+    <meta name="keywords" content="{{keywords}}"/>
+    <meta name="description" content="{{description}}"/>
+    {{if isset(cfg.baiduSiteVerification) && len(cfg.baiduSiteVerification) > 0}}
+    <meta name="baidu-site-verification" content="{{cfg.baiduSiteVerification}}" />
+    {{end}}
+    <link rel="shortcut icon" href="{{len(cfg.Favicon) > 0 ? cfg.Favicon : "/favicon.ico"}}">
+    <link rel='stylesheet' id='da-bootstrap-css'  href='{{cfg.Host}}/themes/assets/css/bootstrap.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='da-fontawesome-css'  href='{{cfg.Host}}/themes/assets/css/font-awesome.min.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='da-main-css'  href='{{cfg.Host}}/themes/assets/css/main.css' type='text/css' media='all' />
+    {{block head()}}{{end}}
+</head>
+<body class="{{block bodyCss()}}{{end}}">
+{{include "header.html"}}
+{{block brand()}}{{end}}
+<section class="container">
+    <div class="content-wrap">
+        <div class="content">
+            {{block bodyContent()}}{{end}}
+        </div>
+    </div>
+    {{include "right.html"}}
+</section>
+{{include "footer.html"}}
+</body>
+</html>

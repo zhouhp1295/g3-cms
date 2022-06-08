@@ -3,11 +3,12 @@ module github.com/zhouhp1295/g3-cms
 go 1.18
 
 require (
+	github.com/CloudyKit/jet v2.1.2+incompatible
 	github.com/gin-gonic/gin v1.7.7
 	github.com/json-iterator/go v1.1.12
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/pkg/errors v0.9.1
-	github.com/zhouhp1295/g3 v0.0.0-20220601121904-823dd53511af
+	github.com/zhouhp1295/g3 v0.0.0-20220608140340-af9bb9e65a62
 	github.com/zhouhp1295/lache v0.0.0-20220525114352-1654fe9fa351
 	go.beyondstorage.io/services/fs/v4 v4.0.0
 	go.beyondstorage.io/services/minio v0.3.0
@@ -21,6 +22,7 @@ require (
 )
 
 require (
+	github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 // indirect
 	github.com/Xuanwo/gg v0.2.0 // indirect
 	github.com/Xuanwo/go-bufferpool v0.2.0 // indirect
 	github.com/Xuanwo/templateutils v0.1.0 // indirect

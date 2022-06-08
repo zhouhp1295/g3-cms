@@ -1,0 +1,18 @@
+{{extends "layouts/main.html"}}
+{{block bodyCss()}}home blog{{end}}
+{{block bodyContent()}}
+
+<div class="title">
+    <h3>{{category.Title}}</h3>
+    {{if isset(childCategories) && len(childCategories)}}
+    <ul class="more">
+        {{range category := childCategories }}
+        <li><a href="{{categoryUrl(category.Id)}}" target="_blank">{{category.Title}}</a></li>
+        {{end}}
+    </ul>
+    {{end}}
+</div>
+
+{{include "components/articles.html"}}
+
+{{end}}<!--end-->
