@@ -19,7 +19,7 @@ func getFrontAllBanners() (banners []FrontBannerData, ok bool) {
 	webConfig := getWebConfigFromCache()
 	//Step 1 获取所有的Banner
 	bannerRows := make([]model.ContentBanner, 0)
-	query.Where("status = ? and delete = ?", crud.FlagYes, crud.FlagNo).Find(&bannerRows)
+	query.Where("status = ? and deleted = ?", crud.FlagYes, crud.FlagNo).Find(&bannerRows)
 	for _, bannerRow := range bannerRows {
 		banners = append(banners, FrontBannerData{
 			Title: bannerRow.Title,

@@ -121,8 +121,8 @@ func TestDatabaseConn(cfg DatabaseConfig) (*gorm.DB, error) {
 }
 
 func initGormDB(w logger.Writer) {
-	//level := logger.Info
-	level := logger.Warn
+	level := logger.Info
+	//level := logger.Warn
 	if IsProdMode() {
 		level = logger.Error
 	}

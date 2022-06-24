@@ -26,7 +26,9 @@ func listAllVisibleMenus() []model.SysMenu {
 				Deleted: crud.FlagNo,
 			},
 		}
-		allMenus := SysMenuDao.FindAll(searchMenu, nil)
+		allMenus := SysMenuDao.FindAll(searchMenu, &crud.BaseQueryParams{
+			OrderBy: "sort ASC",
+		})
 		rows, ok := allMenus.([]model.SysMenu)
 		if !ok {
 			return result

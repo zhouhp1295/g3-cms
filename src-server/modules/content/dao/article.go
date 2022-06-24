@@ -135,7 +135,7 @@ func (dao *contentArticleDAO) FrontLatestArticles(page int) ([]FrontArticleSimpl
 		page = 1
 	}
 	var total int64
-	crud.DbSess().Where("status = ? and deleted  = ?").Table("content_article").Count(&total)
+	crud.DbSess().Where("status = ? and deleted  = ?", crud.FlagYes, crud.FlagNo).Table("content_article").Count(&total)
 	if total == 0 {
 		return make([]FrontArticleSimpleData, 0), crud.PageResult(page, pageSize, int(total))
 	}

@@ -19,7 +19,7 @@ func getFrontAllMenus() (menus []FrontMenuData, ok bool) {
 	webConfig := getWebConfigFromCache()
 	//Step 1 获取所有的Menu
 	menuRows := make([]model.ContentMenu, 0)
-	query.Where("status = ? and delete = ?", crud.FlagYes, crud.FlagNo).Find(&menuRows)
+	query.Where("status = ? and deleted = ?", crud.FlagYes, crud.FlagNo).Find(&menuRows)
 	for _, menuRow := range menuRows {
 		menus = append(menus, FrontMenuData{
 			Title: menuRow.Title,
