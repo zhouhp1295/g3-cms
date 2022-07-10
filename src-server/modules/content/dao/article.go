@@ -240,7 +240,7 @@ func (dao *contentArticleDAO) FrontTagRightLatestHotArticles(tagId int64) []mode
 	articleRows := make([]model.ContentArticle, 0)
 	query := crud.DbSess().
 		Model(new(model.ContentArticle)).
-		Select("content_article.*").
+		Select("distinct content_article.*").
 		Where("content_article.status = ? and content_article.deleted  = ?",
 			crud.FlagYes, crud.FlagNo)
 
@@ -267,7 +267,7 @@ func (dao *contentArticleDAO) FrontTagRightRecommendArticles(tagId int64) []mode
 	articleRows := make([]model.ContentArticle, 0)
 	query := crud.DbSess().
 		Model(new(model.ContentArticle)).
-		Select("content_article.*").
+		Select("distinct content_article.*").
 		Where("content_article.status = ? and content_article.deleted  = ?",
 			crud.FlagYes, crud.FlagNo)
 	if tagId > 0 {

@@ -15,7 +15,7 @@ func TagHandler(ctx *gin.Context) {
 	}
 	page := parseIntParam(ctx, "page", 1)
 	tagId := int64(parseIntParam(ctx, "tagId", 0))
-	tag := dao.ContentCategoryDao.FindByPk(tagId)
+	tag := dao.ContentTagDao.FindByPk(tagId)
 	articles, pageData := dao.ContentArticleDao.FrontTagArticles(tagId, page)
 
 	data := globalVarMap()
