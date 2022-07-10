@@ -76,7 +76,7 @@ func (api *_contentCategoryApi) handleUpdateInMenu(ctx *gin.Context) {
 	category.InMenuSort = params.InMenuSort
 	category.UpdatedBy = operator
 
-	err = crud.DbSess().Select([]string{"in_banner", "in_banner_sort", "updated_by", "updated_at"}).Updates(category).Error
+	err = crud.DbSess().Select([]string{"in_menu", "in_menu_sort", "updated_by", "updated_at"}).Updates(category).Error
 
 	if err == nil {
 		api.SuccessDefault(ctx)
@@ -115,17 +115,10 @@ func (api *_contentCategoryApi) handleUpdateInBanner(ctx *gin.Context) {
 	}
 	operator := ctx.GetInt64(auth.CtxJwtUid)
 
-	category := new(model.ContentCategory)
-	category.Id = params.Id
-	category.InBanner = params.InBanner
-	category.InBannerSort = params.InBannerSort
-	category.UpdatedBy = operator
-
-	err = crud.DbSess().Select([]string{"in_banner", "in_banner_sort", "updated_by", "updated_at"}).Updates(category).Error
-
-	if err == nil {
+	if dao.ContentCategoryDao.UpdateInBanner(params.Id, params.InBanner, params.InBannerSort, operator) {
 		api.SuccessDefault(ctx)
-	} else {
-		api.FailedMessage(ctx, "操作失败, 请稍后重试。err="+err.Error())
+		return
 	}
+
+	api.FailedMessage(ctx, "操作失败, 请稍后重试。err="+err.Error())
 }

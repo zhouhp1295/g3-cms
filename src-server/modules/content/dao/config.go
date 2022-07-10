@@ -29,6 +29,7 @@ type ContentWebConfigData struct {
 	Beian                 string `json:"beian" form:"beian"`                                 //备案号
 	GonganBeian           string `json:"gonganBeian" form:"gonganBeian"`                     //公安网备案号
 	ArticleSuffix         string `json:"articleSuffix" form:"articleSuffix"`                 //文章末尾统一追加内容
+	ArticleCopyright      string `json:"articleCopyright" form:"articleCopyright"`           //原创文章声明
 	Robots                string `json:"robots" form:"robots"`                               //网站robots文件
 	BaiduSiteVerification string `json:"baiduSiteVerification" form:"baiduSiteVerification"` //百度站点验证
 }

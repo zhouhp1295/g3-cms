@@ -8,6 +8,8 @@ import (
 	"github.com/zhouhp1295/g3-cms/modules/content/dao"
 	"github.com/zhouhp1295/g3-cms/render"
 	"reflect"
+	"strconv"
+	"strings"
 	"sync"
 )
 
@@ -44,29 +46,17 @@ func addJetFunc(host string, s *jet.Set) {
 
 	s.AddGlobalFunc("articleUrl", func(a jet.Arguments) reflect.Value {
 		a.RequireNumOfArguments("articleUrl", 1, 1)
-		v := a.Get(0)
-		if v.Kind() != reflect.Int64 {
-			return v
-		}
-		return reflect.ValueOf(fmt.Sprintf("%s/article/%d.html", host, v.Int()))
+		return reflect.ValueOf(fmt.Sprintf("%s/article/%s.html", host, render.ArgToString(a.Get(0))))
 	})
 
 	s.AddGlobalFunc("tagUrl", func(a jet.Arguments) reflect.Value {
 		a.RequireNumOfArguments("tagUrl", 1, 1)
-		v := a.Get(0)
-		if v.Kind() != reflect.Int64 {
-			return v
-		}
-		return reflect.ValueOf(fmt.Sprintf("%s/tag/%d.html", host, v.Int()))
+		return reflect.ValueOf(fmt.Sprintf("%s/tag/%s.html", host, render.ArgToString(a.Get(0))))
 	})
 
 	s.AddGlobalFunc("categoryUrl", func(a jet.Arguments) reflect.Value {
 		a.RequireNumOfArguments("cmsCategoryUrl", 1, 1)
-		v := a.Get(0)
-		if v.Kind() != reflect.Int64 {
-			return v
-		}
-		return reflect.ValueOf(fmt.Sprintf("%s/category/%d.html", host, v.Int()))
+		return reflect.ValueOf(fmt.Sprintf("%s/category/%s.html", host, render.ArgToString(a.Get(0))))
 	})
 }
 
@@ -76,7 +66,41 @@ func globalVarMap() jet.VarMap {
 	varMap.Set("keywords", "")
 	varMap.Set("description", "")
 	varMap.Set("cfg", dao.ContentConfigDao.WebConfig())
+	varMap.Set("menus", dao.ContentMenuDao.FrontMenus())
+	varMap.Set("rightTags", dao.ContentTagDao.FrontTags())
 	return varMap
+}
+
+func errorPage(ctx *gin.Context, msg ...string) {
+
+}
+
+func parseParam(ctx *gin.Context, field string) string {
+	param := ctx.Param(field)
+	if len(param) == 0 {
+		return param
+	}
+	param = strings.TrimLeft(param, "/")
+	param = strings.Replace(param, ".html", "", 1)
+	return param
+}
+
+func parseIntParam(ctx *gin.Context, field string, min int) int {
+	if min < 0 {
+		min = 0
+	}
+	param := ctx.Param(field)
+	if len(param) == 0 {
+		return min
+	}
+	param = strings.TrimLeft(param, "/")
+	param = strings.Replace(param, ".html", "", 1)
+	i, err := strconv.Atoi(param)
+	if err != nil {
+		boot.Logger.Error("parseIntParam param=%s,err=%s", param, err.Error())
+		return min
+	}
+	return i
 }
 
 func IndexHandler(ctx *gin.Context) {
@@ -90,9 +114,10 @@ func IndexHandler(ctx *gin.Context) {
 	data := globalVarMap()
 	data.Set("banners", dao.ContentBannerDao.FrontBanners())
 	data.Set("topArticles", dao.ContentArticleDao.FrontTopArticles())
-	data.Set("menus", dao.ContentMenuDao.FrontMenus())
 	latestArticles, _ := dao.ContentArticleDao.FrontLatestArticles(1)
 	data.Set("latestArticles", latestArticles)
+	data.Set("rightLatestHotArticles", dao.ContentArticleDao.FrontRightLatestHotArticles(0))
+	data.Set("rightRecommendArticles", dao.ContentArticleDao.FrontRightRecommendArticles(0))
 
 	err = view.Execute(ctx.Writer, data, nil)
 	if err != nil {
@@ -102,9 +127,27 @@ func IndexHandler(ctx *gin.Context) {
 }
 
 func LatestHandler(ctx *gin.Context) {
+	view, err := jetEngine().Set.GetTemplate("latest.html")
+	if err != nil {
+		boot.Logger.Error("LatestHandler, err = %s", err.Error())
+		errorPage(ctx, err.Error())
+		return
+	}
+	page := parseIntParam(ctx, "page", 1)
 
-}
+	articles, pageData := dao.ContentArticleDao.FrontLatestArticles(page)
 
-func errorPage(ctx *gin.Context, msg ...string) {
+	data := globalVarMap()
+	data.Set("articles", articles)
+	data.Set("pageUrl", "latest")
+	data.Set("pageData", pageData)
+	data.Set("rightLatestHotArticles", dao.ContentArticleDao.FrontRightLatestHotArticles(0))
+	data.Set("rightRecommendArticles", dao.ContentArticleDao.FrontRightRecommendArticles(0))
 
+	err = view.Execute(ctx.Writer, data, nil)
+
+	if err != nil {
+		boot.Logger.Error("LatestHandler View Execute, err =", err.Error())
+		errorPage(ctx, err.Error())
+	}
 }

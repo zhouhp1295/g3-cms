@@ -5,6 +5,7 @@ import (
 	"github.com/zhouhp1295/g3-cms/boot"
 	"github.com/zhouhp1295/g3-cms/modules/content/model"
 	"github.com/zhouhp1295/g3/crud"
+	"github.com/zhouhp1295/g3/helpers"
 	"strings"
 )
 
@@ -14,6 +15,12 @@ type contentCategoryDAO struct {
 
 var ContentCategoryDao = &contentCategoryDAO{
 	crud.BaseDao{Model: new(model.ContentCategory)},
+}
+
+func (dao *contentCategoryDAO) ClearCache() {
+	clearFrontAllCategoryCache()
+	clearFrontAllBannerCache()
+	clearFrontAllMenuCache()
 }
 
 func (dao *contentCategoryDAO) BeforeInsert(m crud.ModelInterface) (ok bool, msg string) {
@@ -80,6 +87,12 @@ func (dao *contentCategoryDAO) updateChildrenAncestors(m *model.ContentCategory)
 	}
 }
 
+func (dao *contentCategoryDAO) AfterInsert(m crud.ModelInterface) (ok bool, msg string) {
+	ok = true
+	dao.ClearCache()
+	return
+}
+
 func (dao *contentCategoryDAO) AfterUpdate(m crud.ModelInterface) (ok bool, msg string) {
 	if _m, _ok := m.(*model.ContentCategory); _ok {
 		if _m.Last != nil {
@@ -91,6 +104,19 @@ func (dao *contentCategoryDAO) AfterUpdate(m crud.ModelInterface) (ok bool, msg 
 		}
 		ok = true
 	}
+	dao.ClearCache()
+	return
+}
+
+func (dao *contentCategoryDAO) AfterDelete(m crud.ModelInterface) (ok bool, msg string) {
+	ok = true
+	dao.ClearCache()
+	return
+}
+
+func (dao *contentCategoryDAO) AfterRemove(m crud.ModelInterface) (ok bool, msg string) {
+	ok = true
+	dao.ClearCache()
 	return
 }
 
@@ -115,4 +141,38 @@ func (dao *contentCategoryDAO) BeforeDelete(m crud.ModelInterface) (ok bool, msg
 func (dao *contentCategoryDAO) BeforeRemove(m crud.ModelInterface) (ok bool, msg string) {
 	ok, msg = dao.BeforeDelete(m)
 	return
+}
+
+func (dao *contentCategoryDAO) UpdateStatus(pk int64, status interface{}, operator int64) bool {
+	m := dao.FindByPk(pk)
+	_m, _ := m.(*model.ContentCategory)
+	_status, _ := status.(string)
+	_m.Status = _status
+	dao.Update(_m, operator)
+	dao.ClearCache()
+	return true
+}
+
+func (dao *contentCategoryDAO) UpdateInBanner(pk int64, inBanner string, inBannerSort int, operator int64) bool {
+	article := new(model.ContentCategory)
+	article.Id = pk
+	article.InBanner = inBanner
+	article.InBannerSort = inBannerSort
+	article.UpdatedBy = operator
+
+	err := crud.DbSess().Select([]string{"in_banner", "in_banner_sort", "updated_by", "updated_at"}).Updates(article).Error
+
+	if err != nil {
+		return false
+	}
+	dao.ClearCache()
+	return true
+}
+
+func (dao *contentCategoryDAO) GetCategoryName(categoryId int64) string {
+	return getCategoryName(categoryId)
+}
+
+func (dao *contentCategoryDAO) GetFrontCategory(categoryId int64) []helpers.TreeOption {
+	return getCategoryLevels(categoryId)
 }

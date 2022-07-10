@@ -1,23 +1,25 @@
 <header class="header">
     <div class="container">
-        <h1 class="cfg.Logo">
-            <a href="{{cfg.Host}}/" title="{{title}}"
-               style="background-image: url({{cfg.Logo}}); background-size: 100% 100%;">{{title}}</a>
+        <h1 class="logo">
+            <a href="{{cfg.Host}}/" title="{{cfg.Title}}"
+               style="background-image: url({{url(cfg.Logo)}}); background-size: 100% 100%;">{{cfg.Title}}
+            </a>
         </h1>
+        <div class="web-title">{{cfg.Title}}</div>
         <ul class="site-nav site-navbar">
             <li class="navto-home"><a href="{{cfg.Host}}/">网站首页</a></li>
             {{range menu := menus}}
             <li class="navto-front">
                 <a href="{{url(menu.Url)}}" target="_blank">
-                    {{menu.Title}}
-                    {{if len(menu.Children)}}<i class="fa fa-angle-down"></i>{{end}}
+                    {{menu.Label}}
+                    {{if isset(menu.Children) && len(menu.Children)}}<i class="fa fa-angle-down"></i>{{end}}
                 </a>
-                {{if len(menu.Children)}}
+                {{if isset(menu.Children) && len(menu.Children)}}
                 <ul class="sub-menu">
                     {{range child := menu.Children}}
                     <li>
-                        <a href="{{url(child.Url)}}" class="a1" target="_blank" >
-                            {{child.Title}}
+                        <a href="{{url(child.Get(`url`))}}" class="a1" target="_blank" >
+                            {{child.Get(`label`)}}
                         </a>
                     </li>
                     {{end}}

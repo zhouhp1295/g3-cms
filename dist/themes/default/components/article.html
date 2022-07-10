@@ -11,11 +11,11 @@
         <h2><a href="{{articleUrl(article.Id)}}" title="{{article.Title}}" target="_blank">{{article.Title}}</a></h2>
     </header>
     <div class="meta">
-        <time><i class="fa fa-clock-o"></i>{{article.PublishedAt}}</time>
+        <time><i class="fa fa-clock-o"></i>{{formatDate(article.PublishedAt)}}</time>
         <span class="pv"><i class="fa fa-eye"></i>阅读({{article.NumRead}})</span>
         {{if article.Writer > 0}}
         <a class="pc" href="{{writerUrl(article.Writer)}}"><i class="fa fa-comments-o"></i>作者({{article.WriterName}})</a>
         {{end}}
     </div>
-    {{if len(article.Cover)}}<div class="note">{{article.Excerpt}}</div>{{end}}
+    {{if isset(article.SeoDescription) && len(article.SeoDescription)}}<div class="note">{{article.SeoDescription}}</div>{{end}}
 </article>

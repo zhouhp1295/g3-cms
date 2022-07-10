@@ -10,37 +10,38 @@ import (
 )
 
 func clearFrontAllCategoryCache() {
-	boot.Lache.Delete("K-Content-Dao-Category-FrontOptions")
+	boot.Lache.Delete("K-Content-Dao-Category-FrontTreeOptions")
 }
 
-func listFrontCategorySelectOptions() []helpers.SelectOption {
+func listFrontCategoryTreeOptions() []helpers.TreeOption {
 	search := &model.ContentCategory{
 		TailColumns: crud.TailColumns{
 			Status:  crud.FlagYes,
 			Deleted: crud.FlagNo,
 		},
 	}
-	allRows := ContentWriterDao.FindAll(search, nil)
-	rows, ok := allRows.([]model.ContentWriter)
+	allRows := ContentCategoryDao.FindAll(search, nil)
+	rows, ok := allRows.([]model.ContentCategory)
 	if !ok {
-		return []helpers.SelectOption{}
+		return []helpers.TreeOption{}
 	}
-	result := make([]helpers.SelectOption, 0)
+	result := make([]helpers.TreeOption, 0)
 	for _, row := range rows {
-		result = append(result, helpers.SelectOption{
+		result = append(result, helpers.TreeOption{
 			Id:    row.Id,
-			Label: row.Name,
+			Pid:   row.Pid,
+			Label: row.Title,
 		})
 	}
 	return result
 }
 
-func listCategorySelectOptionsFromCache() []helpers.SelectOption {
-	key := "K-Content-Dao-Category-FrontOptions"
-	var result []helpers.SelectOption
+func listFrontCategoryTreeOptionsFromCache() []helpers.TreeOption {
+	key := "K-Content-Dao-Category-FrontTreeOptions"
+	var result []helpers.TreeOption
 	ok := boot.Lache.GetT(key, &result)
 	if !ok {
-		options := listFrontCategorySelectOptions()
+		options := listFrontCategoryTreeOptions()
 		if len(options) == 0 {
 			boot.Lache.Set(key, options, 10*time.Second)
 		} else {
@@ -55,11 +56,15 @@ func getCategoryName(categoryId int64) string {
 	if categoryId <= 0 {
 		return "未分类"
 	}
-	options := listCategorySelectOptionsFromCache()
+	options := listFrontCategoryTreeOptionsFromCache()
 	for _, option := range options {
 		if option.Id == categoryId {
 			return option.Label
 		}
 	}
 	return "未分类"
+}
+
+func getCategoryLevels(categoryId int64) []helpers.TreeOption {
+	return helpers.ToParentLevels(listFrontCategoryTreeOptionsFromCache(), categoryId)
 }

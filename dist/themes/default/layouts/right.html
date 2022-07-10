@@ -1,29 +1,9 @@
 <aside class="sidebar">
-<!--    <div class="widget widget_ui_banner">-->
-<!--        广告位-->
-<!--    </div>-->
-    {{if len(rightTopArticles)}}
-    <div class="widget widget_ui_posts">
-        <h3>{{rightTopCategory.Title}}</h3>
-        <ul>
-            {{range article := rightTopArticles}}
-            <li>
-                <a href="{{articleUrl(article.Id)}}" title="{{article.Title}}" target="_blank">
-                    <span class="text">{{article.Title}}</span>
-                </a>
-            </li>
-            {{end}}
-        </ul>
-    </div>
-    {{end}}
-<!--    <div class="widget widget_ui_banner">-->
-<!--        广告位-->
-<!--    </div>-->
-    {{if len(rightLatestArticles)}}
+    {{if isset(rightLatestHotArticles) && len(rightLatestHotArticles)}}
     <div class="widget widget_ui_posts">
         <h3>24小时热闻</h3>
         <ul>
-            {{range article := rightLatestArticles}}
+            {{range article := rightLatestHotArticles}}
             <li>
                 <a href="{{articleUrl(article.Id)}}" title="{{article.Title}}" target="_blank">
                     <span class="text">{{article.Title}}</span>
@@ -36,9 +16,9 @@
 <!--    <div class="widget widget_ui_banner">-->
 <!--        广告位-->
 <!--    </div>-->
-    {{if len(rightRecommendArticles)}}
+    {{if isset(rightRecommendArticles) && len(rightRecommendArticles)}}
     <div class="widget widget_ui_posts">
-        <h3>小编推荐</h3>
+        <h3>推荐阅读</h3>
         <ul>
             {{range article := rightRecommendArticles}}
             <li>
@@ -50,29 +30,12 @@
         </ul>
     </div>
     {{end}}
-<!--    <div class="widget widget_ui_banner">-->
-<!--        广告位-->
-<!--    </div>-->
-    {{if len(rightLatestRecommendArticles)}}
-    <div class="widget widget_ui_posts">
-        <h3>最新推荐</h3>
-        <ul>
-            {{range article := rightLatestRecommendArticles}}
-            <li>
-                <a href="{{articleUrl(article.Id)}}" title="{{article.Title}}" target="_blank">
-                    <span class="text">{{article.Title}}</span>
-                </a>
-            </li>
-            {{end}}
-        </ul>
-    </div>
-    {{end}}
-    {{if len(rightTags)}}
+    {{if isset(rightTags) && len(rightTags)}}
     <div class="widget widget_ui_tags">
         <h3>标签云</h3>
         <div class="items">
             {{range tag := rightTags}}
-            <a href="{{tagUrl(tag.Id)}}" target="_blank">{{tag.Title}}</a>
+            <a href="{{tagUrl(tag.Id)}}" target="_blank">{{tag.Title}}({{tag.Cnt}})</a>
             {{end}}
         </div>
     </div>

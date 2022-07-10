@@ -2,6 +2,7 @@
 {{block bodyCss()}}home blog{{end}}
 {{block bodyContent()}}
 
+{{if isset(category)}}
 <div class="title">
     <h3>{{category.Title}}</h3>
     {{if isset(childCategories) && len(childCategories)}}
@@ -12,6 +13,11 @@
     </ul>
     {{end}}
 </div>
+{{else}}
+<div class="title">
+    <h3>未分类</h3>
+</div>
+{{end}}
 
 {{include "components/articles.html"}}
 

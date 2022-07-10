@@ -11,47 +11,41 @@ func clearFrontAllArticleCache() {
 	boot.Lache.Delete("K-Content-Dao-Article-FrontTopArticles")
 }
 
+func applyFrontData(m *model.ContentArticle) {
+	m.WriterName = getWriterName(m.Writer)
+	m.CategoryName = getCategoryName(m.Category)
+	m.FrontCategories = ContentCategoryDao.GetFrontCategory(m.Category)
+}
+
 // 根据一定的逻辑取固定个数的最热文章
-func getFrontTopArticles() (articles []FrontArticleSimpleData, ok bool) {
+func getFrontTopArticles() (articles []model.ContentArticle, ok bool) {
 	//逻辑: 最近一周点击量最多的一篇三篇文章
 	limit := 3
-	articleRows := make([]model.ContentArticle, 0)
+	articles = make([]model.ContentArticle, 0)
 	crud.DbSess().Where("status = ? and deleted  = ?", crud.FlagYes, crud.FlagNo).
 		Order("num_read desc,published_at desc").
-		Limit(limit).Offset(0).
-		Find(&articleRows)
+		Limit(limit).
+		Find(&articles)
 
-	articles = make([]FrontArticleSimpleData, len(articleRows))
-
-	for i, article := range articleRows {
-		_data := FrontArticleSimpleData{
-			Id:       article.Id,
-			Title:    article.Title,
-			SeoTitle: article.SeoTitle,
-			Cover:    article.Cover,
-			Writer:   article.Writer,
-			NumRead:  article.NumRead,
-			Category: article.Category,
-		}
-
-		if len(_data.SeoTitle) == 0 {
-			_data.SeoTitle = _data.Title
-		}
-
-		_data.WriterName = getWriterName(_data.Writer)
-
-		_data.CategoryName = getCategoryName(_data.Category)
-
-		articles[i] = _data
+	if len(articles) == 0 {
+		ok = false
+		return
 	}
 
+	for _, article := range articles {
+		if len(article.SeoTitle) == 0 {
+			article.SeoTitle = article.Title
+		}
+		applyFrontData(&article)
+	}
+	ok = true
 	return
 }
 
 // 根据一定的逻辑取固定个数的最热文章
-func getFrontTopArticlesFromCache() []FrontArticleSimpleData {
+func getFrontTopArticlesFromCache() []model.ContentArticle {
 	key := "K-Content-Dao-Article-FrontTopArticles"
-	result := make([]FrontArticleSimpleData, 0)
+	result := make([]model.ContentArticle, 0)
 	ok := boot.Lache.GetT(key, &result)
 	if !ok {
 		_data, _ok := getFrontTopArticles()

@@ -14,7 +14,7 @@
         {{range i,v := banners}}
         <div class="item {{if i == 0}}active{{end}}">
             <a target="_blank" href="{{url(v.Url)}}">
-                <img src="{{v.Cover}}" alt="{{v.Title}}" class="banner" {{include "components/errimg.html"}}>
+                <img src="{{v.Pic}}" alt="{{v.Title}}" class="banner" {{include "components/errimg.html"}}>
             </a>
         </div>
         {{end}}
@@ -37,7 +37,7 @@
         <a href="{{articleUrl(article.Id)}}" title="{{article.Title}}" target="_blank">{{article.Title}}</a>
     </h2>
     <p class="note">
-        <a href="{{articleUrl(article.Id)}}" target="_blank">{{article.Excerpt}}[详细]</a>
+        <a href="{{articleUrl(article.Id)}}" target="_blank">{{article.SeoDescription}}[详细]</a>
     </p>
 </article>
 {{end}}
@@ -48,13 +48,11 @@
         {{range i,article := topArticles}}
         {{if i > 0}}
         <li>
-            {{if len(article.Cover)}}
             <a href="{{articleUrl(article.Id)}}" title="{{article.Title}}" target="_blank" class="thum">
                 <img alt="{{article.Title}}" src="{{article.Cover}}" {{include "components/errimg.html"}}>
             </a>
-            {{end}}
             <h4><a href="{{articleUrl(article.Id)}}" title="{{article.Title}}" target="_blank">{{article.Title}}</a></h4>
-            <p class="note">{{article.Excerpt}}</p>
+            <p class="note">{{article.SeoDescription}}</p>
         </li>
         {{end}}
         {{end}}

@@ -1,9 +1,12 @@
 package dao
 
 import (
+	"fmt"
 	"github.com/zhouhp1295/g3-cms/modules/content/model"
 	"github.com/zhouhp1295/g3/crud"
 	"github.com/zhouhp1295/g3/helpers"
+	"gorm.io/gorm"
+	"time"
 )
 
 type contentArticleDAO struct {
@@ -14,28 +17,10 @@ var ContentArticleDao = &contentArticleDAO{
 	crud.BaseDao{Model: new(model.ContentArticle)},
 }
 
-type FrontArticleSimpleData struct {
-	Id           int64                  `json:"id"`
-	Title        string                 `json:"title"`
-	SeoTitle     string                 `json:"seoTitle"`
-	Cover        string                 `json:"cover"`
-	Excerpt      string                 `json:"excerpt"`
-	Writer       int64                  `json:"writer"`
-	WriterName   string                 `json:"writerName"`
-	NumRead      int64                  `json:"numRead"`
-	PublishedAt  string                 `json:"publishedAt"`
-	Category     int64                  `json:"category"`
-	CategoryName string                 `json:"categoryName"`
-	Tags         []helpers.SelectOption `json:"tags"`
+func (dao *contentArticleDAO) ClearCache() {
+	clearFrontAllBannerCache()
+	clearFrontAllArticleCache()
 }
-
-type FrontArticleDetailData struct {
-	FrontArticleSimpleData
-	SeoKeywords    string `json:"seoKeywords"`
-	SeoDescription string `json:"seoDescription"`
-	Content        string `json:"content"`
-}
-
 func (dao *contentArticleDAO) AfterGet(m crud.ModelInterface) {
 	if _m, _ok := m.(*model.ContentArticle); _ok {
 		tagOptions := make([]helpers.SelectOption, 0)
@@ -57,10 +42,14 @@ func (dao *contentArticleDAO) AfterGet(m crud.ModelInterface) {
 	}
 }
 
-//
-//func (dao *contentArticleDAO) BeforeInsert(m crud.ModelInterface) (ok bool, msg string) {
-//	return
-//}
+func (dao *contentArticleDAO) BeforeInsert(m crud.ModelInterface) (ok bool, msg string) {
+	if _m, _ok := m.(*model.ContentArticle); _ok && _m.Status == crud.FlagYes {
+		_m.PublishedBy = _m.CreatedBy
+		_m.PublishedAt = time.Now()
+	}
+	ok = true
+	return
+}
 
 func (dao *contentArticleDAO) AfterInsert(m crud.ModelInterface) (ok bool, msg string) {
 	if _m, _ok := m.(*model.ContentArticle); _ok && len(_m.Tags) > 0 {
@@ -74,13 +63,22 @@ func (dao *contentArticleDAO) AfterInsert(m crud.ModelInterface) (ok bool, msg s
 		crud.DbSess().CreateInBatches(tags, len(tags))
 	}
 	ok = true
+	dao.ClearCache()
 	return
 }
 
-//
-//func (dao *contentArticleDAO) BeforeUpdate(m crud.ModelInterface) (ok bool, msg string) {
-//	return
-//}
+func (dao *contentArticleDAO) BeforeUpdate(m crud.ModelInterface) (ok bool, msg string) {
+	if _m, _ok := m.(*model.ContentArticle); _ok && _m.Status == crud.FlagYes {
+		lastM := dao.FindByPk(_m.Id)
+		_lastM, _ := lastM.(*model.ContentArticle)
+		if _lastM.Status != _m.Status {
+			_m.PublishedBy = _m.CreatedBy
+			_m.PublishedAt = time.Now()
+		}
+	}
+	ok = true
+	return
+}
 
 func (dao *contentArticleDAO) AfterUpdate(m crud.ModelInterface) (ok bool, msg string) {
 	if _m, _ok := m.(*model.ContentArticle); _ok && len(_m.Tags) > 0 {
@@ -112,7 +110,38 @@ func (dao *contentArticleDAO) AfterUpdate(m crud.ModelInterface) (ok bool, msg s
 		}
 	}
 	ok = true
+	dao.ClearCache()
 	return
+}
+
+func (dao *contentArticleDAO) UpdateStatus(pk int64, status interface{}, operator int64) bool {
+	m := dao.FindByPk(pk)
+	_m, _ := m.(*model.ContentArticle)
+	_status, _ := status.(string)
+	if _m.Status != _status && _status == crud.FlagYes {
+		_m.PublishedBy = operator
+		_m.PublishedAt = time.Now()
+	}
+	_m.Status = _status
+	dao.Update(_m, operator)
+	dao.ClearCache()
+	return true
+}
+
+func (dao *contentArticleDAO) UpdateInBanner(pk int64, inBanner string, inBannerSort int, operator int64) bool {
+	article := new(model.ContentArticle)
+	article.Id = pk
+	article.InBanner = inBanner
+	article.InBannerSort = inBannerSort
+	article.UpdatedBy = operator
+
+	err := crud.DbSess().Select([]string{"in_banner", "in_banner_sort", "updated_by", "updated_at"}).Updates(article).Error
+
+	if err != nil {
+		return false
+	}
+	dao.ClearCache()
+	return true
 }
 
 //
@@ -124,12 +153,16 @@ func (dao *contentArticleDAO) AfterUpdate(m crud.ModelInterface) (ok bool, msg s
 //	return
 //}
 
-func (dao *contentArticleDAO) FrontTopArticles() []FrontArticleSimpleData {
+func (dao *contentArticleDAO) ApplyFrontData(m *model.ContentArticle) {
+	applyFrontData(m)
+}
+
+func (dao *contentArticleDAO) FrontTopArticles() []model.ContentArticle {
 	return getFrontTopArticlesFromCache()
 }
 
-func (dao *contentArticleDAO) FrontLatestArticles(page int) ([]FrontArticleSimpleData, crud.PageData) {
-	pageSize := 20
+func (dao *contentArticleDAO) FrontLatestArticles(page int) ([]model.ContentArticle, crud.PageData) {
+	pageSize := crud.DefaultPageSize
 
 	if page < 1 {
 		page = 1
@@ -137,7 +170,7 @@ func (dao *contentArticleDAO) FrontLatestArticles(page int) ([]FrontArticleSimpl
 	var total int64
 	crud.DbSess().Where("status = ? and deleted  = ?", crud.FlagYes, crud.FlagNo).Table("content_article").Count(&total)
 	if total == 0 {
-		return make([]FrontArticleSimpleData, 0), crud.PageResult(page, pageSize, int(total))
+		return make([]model.ContentArticle, 0), crud.PageResult(page, pageSize, int(total))
 	}
 
 	articleRows := make([]model.ContentArticle, 0)
@@ -146,29 +179,275 @@ func (dao *contentArticleDAO) FrontLatestArticles(page int) ([]FrontArticleSimpl
 		Limit(pageSize).Offset((page - 1) * pageSize).
 		Find(&articleRows)
 
-	articles := make([]FrontArticleSimpleData, len(articleRows))
+	for _, article := range articleRows {
 
-	for i, article := range articleRows {
-		_data := FrontArticleSimpleData{
-			Id:       article.Id,
-			Title:    article.Title,
-			SeoTitle: article.SeoTitle,
-			Cover:    article.Cover,
-			Writer:   article.Writer,
-			NumRead:  article.NumRead,
-			Category: article.Category,
+		if len(article.SeoTitle) == 0 {
+			article.SeoTitle = article.Title
 		}
-
-		if len(_data.SeoTitle) == 0 {
-			_data.SeoTitle = _data.Title
-		}
-
-		_data.WriterName = getWriterName(_data.Writer)
-
-		_data.CategoryName = getCategoryName(_data.Category)
-
-		articles[i] = _data
+		applyFrontData(&article)
 	}
 
-	return articles, crud.PageResult(page, pageSize, int(total))
+	return articleRows, crud.PageResult(page, pageSize, int(total))
+}
+
+func (dao *contentArticleDAO) FrontRightLatestHotArticles(categoryId int64) []model.ContentArticle {
+	articleRows := make([]model.ContentArticle, 0)
+	query := crud.DbSess().Where("status = ? and deleted  = ?",
+		crud.FlagYes, crud.FlagNo)
+
+	if categoryId > 0 {
+		query.Order(fmt.Sprintf("abs(category - %d) asc,num_read desc,sort desc,published_at desc", categoryId))
+	} else {
+		query.Order("num_read desc,sort desc,published_at desc")
+	}
+
+	query.Limit(10).Find(&articleRows)
+
+	for _, article := range articleRows {
+
+		if len(article.SeoTitle) == 0 {
+			article.SeoTitle = article.Title
+		}
+		applyFrontData(&article)
+	}
+	return articleRows
+}
+
+func (dao *contentArticleDAO) FrontRightRecommendArticles(categoryId int64) []model.ContentArticle {
+	articleRows := make([]model.ContentArticle, 0)
+	query := crud.DbSess().Where("status = ? and deleted  = ?",
+		crud.FlagYes, crud.FlagNo)
+
+	if categoryId > 0 {
+		query.Order(fmt.Sprintf("abs(category - %d) asc,sort desc,num_read desc,published_at desc", categoryId))
+	} else {
+		query.Order("sort desc,num_read desc,published_at desc")
+	}
+
+	query.Limit(10).Find(&articleRows)
+
+	for _, article := range articleRows {
+
+		if len(article.SeoTitle) == 0 {
+			article.SeoTitle = article.Title
+		}
+		applyFrontData(&article)
+	}
+	return articleRows
+}
+
+func (dao *contentArticleDAO) FrontTagRightLatestHotArticles(tagId int64) []model.ContentArticle {
+	articleRows := make([]model.ContentArticle, 0)
+	query := crud.DbSess().
+		Model(new(model.ContentArticle)).
+		Select("content_article.*").
+		Where("content_article.status = ? and content_article.deleted  = ?",
+			crud.FlagYes, crud.FlagNo)
+
+	if tagId > 0 {
+		query.Joins("left join content_article_tag on content_article_tag.article_id = content_article.id").
+			Order(fmt.Sprintf("abs(content_article_tag.tag_id - %d) asc,content_article.num_read desc,content_article.sort desc,content_article.published_at desc", tagId))
+	} else {
+		query.Order("content_article.num_read desc,content_article.sort desc,content_article.published_at desc")
+	}
+
+	query.Limit(10).Find(&articleRows)
+
+	for _, article := range articleRows {
+
+		if len(article.SeoTitle) == 0 {
+			article.SeoTitle = article.Title
+		}
+		applyFrontData(&article)
+	}
+	return articleRows
+}
+
+func (dao *contentArticleDAO) FrontTagRightRecommendArticles(tagId int64) []model.ContentArticle {
+	articleRows := make([]model.ContentArticle, 0)
+	query := crud.DbSess().
+		Model(new(model.ContentArticle)).
+		Select("content_article.*").
+		Where("content_article.status = ? and content_article.deleted  = ?",
+			crud.FlagYes, crud.FlagNo)
+	if tagId > 0 {
+		query.Joins("left join content_article_tag on content_article_tag.article_id = content_article.id").
+			Order(fmt.Sprintf("abs(content_article_tag.tag_id - %d) asc,content_article.num_read desc,content_article.sort desc,content_article.published_at desc", tagId))
+	} else {
+		query.Order("content_article.num_read desc,content_article.sort desc,content_article.published_at desc")
+	}
+
+	query.Limit(10).Find(&articleRows)
+
+	for _, article := range articleRows {
+
+		if len(article.SeoTitle) == 0 {
+			article.SeoTitle = article.Title
+		}
+		applyFrontData(&article)
+	}
+	return articleRows
+}
+
+func (dao *contentArticleDAO) FrontWriterRightLatestHotArticles(writerId int64) []model.ContentArticle {
+	articleRows := make([]model.ContentArticle, 0)
+	query := crud.DbSess().Where("status = ? and deleted  = ?",
+		crud.FlagYes, crud.FlagNo)
+
+	if writerId > 0 {
+		query.Order(fmt.Sprintf("abs(writer - %d) asc,num_read desc,sort desc,published_at desc", writerId))
+	} else {
+		query.Order("num_read desc,sort desc,published_at desc")
+	}
+
+	query.Limit(10).Find(&articleRows)
+
+	for _, article := range articleRows {
+
+		if len(article.SeoTitle) == 0 {
+			article.SeoTitle = article.Title
+		}
+		applyFrontData(&article)
+	}
+	return articleRows
+}
+
+func (dao *contentArticleDAO) FrontWriterRightRecommendArticles(writerId int64) []model.ContentArticle {
+	articleRows := make([]model.ContentArticle, 0)
+	query := crud.DbSess().Where("status = ? and deleted  = ?",
+		crud.FlagYes, crud.FlagNo)
+
+	if writerId > 0 {
+		query.Order(fmt.Sprintf("abs(writer - %d) asc,sort desc,num_read desc,published_at desc", writerId))
+	} else {
+		query.Order("sort desc,num_read desc,published_at desc")
+	}
+
+	query.Limit(10).Find(&articleRows)
+
+	for _, article := range articleRows {
+
+		if len(article.SeoTitle) == 0 {
+			article.SeoTitle = article.Title
+		}
+		applyFrontData(&article)
+	}
+	return articleRows
+}
+
+func (dao *contentArticleDAO) FrontCategoryArticles(categoryId int64, page int) ([]model.ContentArticle, crud.PageData) {
+	pageSize := crud.DefaultPageSize
+
+	if page < 1 {
+		page = 1
+	}
+	treeOptions := listFrontCategoryTreeOptionsFromCache()
+	categoryOptions := helpers.FindChildrenIdList(treeOptions, categoryId)
+	if categoryId > 0 {
+		categoryOptions = append(categoryOptions, categoryId)
+	}
+
+	findScope := func(db *gorm.DB) *gorm.DB {
+		db.Where("status = ? and deleted  = ?", crud.FlagYes, crud.FlagNo)
+		if len(categoryOptions) > 0 {
+			db.Where("category in (?)", categoryOptions)
+		}
+		return db
+	}
+
+	var total int64
+	crud.DbSess().Scopes(findScope).Table("content_article").Count(&total)
+	if total == 0 {
+		return make([]model.ContentArticle, 0), crud.PageResult(page, pageSize, int(total))
+	}
+
+	articleRows := make([]model.ContentArticle, 0)
+	crud.DbSess().Scopes(findScope).
+		Order("published_at desc").
+		Limit(pageSize).Offset((page - 1) * pageSize).
+		Find(&articleRows)
+
+	for _, article := range articleRows {
+		if len(article.SeoTitle) == 0 {
+			article.SeoTitle = article.Title
+		}
+		applyFrontData(&article)
+	}
+
+	return articleRows, crud.PageResult(page, pageSize, int(total))
+}
+
+func (dao *contentArticleDAO) FrontWriterArticles(writerId int64, page int) ([]model.ContentArticle, crud.PageData) {
+	pageSize := crud.DefaultPageSize
+
+	if page < 1 {
+		page = 1
+	}
+
+	findScope := func(db *gorm.DB) *gorm.DB {
+		db.Where("status = ? and deleted  = ?", crud.FlagYes, crud.FlagNo)
+		if writerId > 0 {
+			db.Where("writer = ?", writerId)
+		}
+		return db
+	}
+
+	var total int64
+	crud.DbSess().Scopes(findScope).Table("content_article").Count(&total)
+	if total == 0 {
+		return make([]model.ContentArticle, 0), crud.PageResult(page, pageSize, int(total))
+	}
+
+	articleRows := make([]model.ContentArticle, 0)
+	crud.DbSess().Scopes(findScope).
+		Order("published_at desc").
+		Limit(pageSize).Offset((page - 1) * pageSize).
+		Find(&articleRows)
+
+	for _, article := range articleRows {
+		if len(article.SeoTitle) == 0 {
+			article.SeoTitle = article.Title
+		}
+		applyFrontData(&article)
+	}
+
+	return articleRows, crud.PageResult(page, pageSize, int(total))
+}
+
+func (dao *contentArticleDAO) FrontTagArticles(tagId int64, page int) ([]model.ContentArticle, crud.PageData) {
+	pageSize := crud.DefaultPageSize
+
+	if page < 1 {
+		page = 1
+	}
+
+	findScope := func(db *gorm.DB) *gorm.DB {
+		db.Where("content_article.status = ? and content_article.deleted  = ?", crud.FlagYes, crud.FlagNo)
+		if tagId > 0 {
+			db.Joins("left join content_article_tag on content_article_tag.article_id = content_article.id")
+			db.Where("content_article_tag.tag_id = ?", tagId)
+		}
+		return db
+	}
+
+	var total int64
+	crud.DbSess().Model(new(model.ContentArticle)).Scopes(findScope).Count(&total)
+	if total == 0 {
+		return make([]model.ContentArticle, 0), crud.PageResult(page, pageSize, int(total))
+	}
+
+	articleRows := make([]model.ContentArticle, 0)
+	crud.DbSess().Model(new(model.ContentArticle)).Select("content_article.*").Scopes(findScope).
+		Order("content_article.published_at desc").
+		Limit(pageSize).Offset((page - 1) * pageSize).
+		Find(&articleRows)
+
+	for _, article := range articleRows {
+		if len(article.SeoTitle) == 0 {
+			article.SeoTitle = article.Title
+		}
+		applyFrontData(&article)
+	}
+
+	return articleRows, crud.PageResult(page, pageSize, int(total))
 }

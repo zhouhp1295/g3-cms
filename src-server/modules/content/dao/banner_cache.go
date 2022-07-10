@@ -45,7 +45,7 @@ func getFrontAllBanners() (banners []FrontBannerData, ok bool) {
 	}
 	//Step 3 获取所有显示到Banner的文章
 	articleRows := make([]model.ContentArticle, 0)
-	query.Where("status = ? and in_banner = ? and deleted = ? ", crud.FlagYes, crud.FlagYes, crud.FlagNo).Find(&categoryRows)
+	query.Where("status = ? and in_banner = ? and deleted = ? ", crud.FlagYes, crud.FlagYes, crud.FlagNo).Find(&articleRows)
 	for _, articleRow := range articleRows {
 		pic := articleRow.Banner
 		if len(pic) == 0 {

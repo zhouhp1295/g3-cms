@@ -6,6 +6,7 @@ type ContentArticleTag struct {
 	crud.BaseModel
 	ArticleId int64 `gorm:"NOT NULL;INDEX;COMMENT:文章ID" json:"articleId" json:"articleId"`
 	TagId     int64 `gorm:"NOT NULL;INDEX;COMMENT:标签ID" json:"tagId" json:"tagId"`
+	Cnt       int64 `gorm:"-"`
 	crud.TailColumns
 }
 

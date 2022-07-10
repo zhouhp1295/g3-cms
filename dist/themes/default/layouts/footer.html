@@ -1,4 +1,4 @@
-{{if len(friendLinks)}}
+{{if isset(friendLinks) && len(friendLinks)}}
 <div class="branding branding-black">
     <div class="container links">
         <ul>
@@ -12,12 +12,12 @@
 {{end}}
 <footer class="footer">
     <div class="container">
-        {{if isset(cfg.copyright)}}<p>{{cfg.copyright}}</p>{{end}}
-        {{if isset(cfg.beian)}}
+        {{if isset(cfg.Copyright)}}<p>{{cfg.Copyright}}</p>{{end}}
+        {{if isset(cfg.Beian)}}
         <p>
             <a href="http://www.miitbeian.gov.cn/" target="_blank"
                rel="nofollow" style="color: white;">
-                {{cfg.beian}}
+                {{cfg.Beian}}
             </a>
         </p>
         {{end}}
@@ -33,11 +33,11 @@
         ver: '9.0.0'
     };
 </script>
-<script type='text/javascript' src='{{host}}/themes/js/jquery.min.js'></script>
-<script type='text/javascript' src='{{host}}/themes/js/loader.js'></script>
-<script type='text/javascript' src='{{host}}/themes/js/main.js'></script>
-<script type='text/javascript' src='{{host}}/themes/js/lazyload.js'></script>
-<script id="cy_cmt_num" src="{{host}}/themes/js/plugins.list.count.js">
+<script type='text/javascript' src='{{cfg.Host}}/themes/assets/js/jquery.min.js'></script>
+<script type='text/javascript' src='{{cfg.Host}}/themes/assets/js/loader.js'></script>
+<script type='text/javascript' src='{{cfg.Host}}/themes/assets/js/main.js'></script>
+<script type='text/javascript' src='{{cfg.Host}}/themes/assets/js/lazyload.js'></script>
+<script id="cy_cmt_num" src="{{cfg.Host}}/themes/assets/js/plugins.list.count.js">
 </script>
 <script language="javascript">
     $("img.lazy").lazyload({

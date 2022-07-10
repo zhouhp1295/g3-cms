@@ -42,3 +42,32 @@ func (dao *contentTagDAO) BeforeInsert(m crud.ModelInterface) (ok bool, msg stri
 	}
 	return
 }
+
+type FrontTagData struct {
+	Id    interface{} `json:"id"`
+	Title interface{} `json:"title"`
+	Cnt   interface{} `json:"cnt"`
+}
+
+func (dao *contentTagDAO) FrontTags() []FrontTagData {
+	tagRows := make([]map[string]interface{}, 0)
+
+	crud.DbSess().Model(new(model.ContentArticleTag)).
+		Joins("left join content_tag on content_article_tag.tag_id = content_tag.id").
+		Where("content_tag.deleted = ? and content_tag.status = ?", crud.FlagNo, crud.FlagYes).
+		Select("content_tag.id,content_tag.title,count(content_tag.id) cnt").
+		Group("content_tag.id").
+		Order("cnt desc").
+		Limit(20).
+		Find(&tagRows)
+
+	result := make([]FrontTagData, len(tagRows))
+
+	for i, row := range tagRows {
+		result[i].Id = row["id"]
+		result[i].Title = row["title"]
+		result[i].Cnt = row["cnt"]
+	}
+
+	return result
+}

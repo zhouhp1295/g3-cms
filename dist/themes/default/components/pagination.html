@@ -1,7 +1,36 @@
-<ul>
-    {{range pageItem := pageItems}}
-    <li>
-        <a  href="{{pageItem.Href}}" class="{{pageItem.Class}}" {{pageItem.Target}}>{{pageItem.Title}}</a>
-    </li>
+{{if isset(pageData)}}
+    {{if pageData.Total < 1}}
+    <div>暂无数据</div>
+    {{else}}
+    <!--分页数据begin-->
+    {{if pageData.PageTotal > 1}}
+    <ul>
+        {{if pageData.PageNum > 1}}
+        <li><a href="{{cfg.Host}}/{{pageUrl}}/1.html"><<</a></li>
+        <li><a href="{{cfg.Host}}/{{pageUrl}}/{{pageData.PageNum-1}}.html"><</a></li>
+        {{else}}
+        <li><<</li>
+        <li><</li>
+        {{end}}
+
+        {{range page := forPages(pageData.PageTotal, pageData.PageNum, 20)}}
+        {{if page == pageData.PageNum }}
+        <li class="active">{{page}}</li>
+        {{else}}
+        <li><a href="{{cfg.Host}}/{{pageUrl}}/{{page}}.html">{{page}}</a></li>
+        {{end}}
+        {{end}}
+
+        {{if pageData.PageNum < pageData.PageTotal}}
+        <li><a href="{{cfg.Host}}/{{pageUrl}}/{{pageData.PageNum+1}}.html">></a></li>
+        <li><a href="{{cfg.Host}}/{{pageUrl}}/{{pageData.PageTotal}}.html">>></a></li>
+        {{else}}
+        <li>></li>
+        <li>>></li>
+        {{end}}
+    </ul>
     {{end}}
-</ul>
+    <!--分页数据end-->
+    <div style="margin-top: 10px;">共{{pageData.PageTotal}}页, {{pageData.Total}}条资讯</div>
+    {{end}}
+{{end}}

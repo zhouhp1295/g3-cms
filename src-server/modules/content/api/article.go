@@ -4,9 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/zhouhp1295/g3-cms/boot"
 	"github.com/zhouhp1295/g3-cms/modules/content/dao"
-	"github.com/zhouhp1295/g3-cms/modules/content/model"
 	"github.com/zhouhp1295/g3/auth"
-	"github.com/zhouhp1295/g3/crud"
 	"github.com/zhouhp1295/g3/net"
 	"net/http"
 )
@@ -70,17 +68,10 @@ func (api *_contentArticleApi) handleUpdateInBanner(ctx *gin.Context) {
 	}
 	operator := ctx.GetInt64(auth.CtxJwtUid)
 
-	article := new(model.ContentArticle)
-	article.Id = params.Id
-	article.InBanner = params.InBanner
-	article.InBannerSort = params.InBannerSort
-	article.UpdatedBy = operator
-
-	err = crud.DbSess().Select([]string{"in_banner", "in_banner_sort", "updated_by", "updated_at"}).Updates(article).Error
-
-	if err == nil {
+	if dao.ContentArticleDao.UpdateInBanner(params.Id, params.InBanner, params.InBannerSort, operator) {
 		api.SuccessDefault(ctx)
-	} else {
-		api.FailedMessage(ctx, "操作失败, 请稍后重试。err="+err.Error())
+		return
 	}
+
+	api.FailedMessage(ctx, "操作失败, 请稍后重试。err="+err.Error())
 }

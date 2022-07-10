@@ -1,14 +1,23 @@
 {{extends "layouts/main.html"}}
 {{block bodyCss()}}single single-post postid-6221 single-format-standard comment-open{{end}}
 {{block bodyContent()}}
-
+<div class="page-nav">
+    <a href="/" >首页</a>
+    {{if len(article.FrontCategories)}}
+    {{range frontCate := article.FrontCategories}}
+    >> <a href="{{categoryUrl(frontCate.Id)}}">{{frontCate.Label}}</a>
+    {{end}}
+    {{else}}
+    >> <a href="{{categoryUrl(0)}}">未分类</a>
+    {{end}}
+</div>
 <header class="article-header">
     <h1 class="article-title">{{article.Title}}</h1>
     <div class="article-meta">
         <span class="item">
             作者:<a href="{{writerUrl(article.Writer)}}" target="_blank">{{article.WriterName}}</a>
         </span>
-        <span class="item">{{article.PublishedAt}}</span>
+        <span class="item">{{formatDate(article.PublishedAt)}}</span>
         <span class="item">
             分类：<a href="{{categoryUrl(article.Category)}}" target="_blank">{{article.CategoryName}}</a>
         </span>
@@ -18,24 +27,24 @@
     </div>
 </header>
 <article class="article-content">
-    {{if article.IsOriginal == "1" && isset(articleCopyright)}}
+    {{if article.IsOriginal == "1" && isset(cfg.ArticleCopyright) && len(cfg.ArticleCopyright) > 0}}
     <p class="post-copyright">
-        {{articleCopyright|raw}}
+        {{cfg.ArticleCopyright}}
     </p>
     {{end}}
     {{article.Content|raw}}
-    {{if article.IsOriginal != "1" && isset(cfg.articleSuffix)}}
+    {{if article.IsOriginal != "1" && isset(cfg.ArticleSuffix) && len(cfg.ArticleSuffix) > 0}}
     <p class="post-copyright">
-        {{cfg.articleSuffix}}
+        {{cfg.ArticleSuffix}}
     </p>
     {{end}}
-    {{if article.IsOriginal == "1" && isset(articleCopyright)}}
+    {{if article.IsOriginal == "1" && isset(cfg.ArticleCopyright) && len(cfg.ArticleCopyright) > 0}}
     <p class="post-copyright">
-        {{articleCopyright|raw}}
+        {{cfg.ArticleCopyright}}
     </p>
     {{end}}
 </article>
-{{if len(article.SimpleTags)}}
+{{if isset(article.SimpleTags) && len(article.SimpleTags)}}
 <div class="article-tags">标签：
     {{range tag := article.SimpleTags}}
     <a href='{{tagUrl(tag.Id)}}' target='_blank'>{{tag.Title}}</a>

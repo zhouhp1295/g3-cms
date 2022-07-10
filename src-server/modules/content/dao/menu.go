@@ -5,6 +5,7 @@ import (
 	"github.com/zhouhp1295/g3-cms/boot"
 	"github.com/zhouhp1295/g3-cms/modules/content/model"
 	"github.com/zhouhp1295/g3/crud"
+	"github.com/zhouhp1295/g3/helpers"
 	"strings"
 )
 
@@ -118,10 +119,26 @@ func (dao *contentMenuDAO) BeforeRemove(m crud.ModelInterface) (ok bool, msg str
 }
 
 type FrontMenuData struct {
-	Title string `json:"title"`
-	Url   string `json:"url"`
-	Icon  string `json:"icon"`
-	Sort  int    `json:"sort"`
+	helpers.TreeNodeV2
+	Url  string `json:"url"`
+	Icon string `json:"icon"`
+	Sort int    `json:"sort"`
+}
+
+func (data *FrontMenuData) Get(field string) interface{} {
+	v := data.TreeNodeV2.Get(field)
+	if v != nil {
+		return v
+	}
+	switch field {
+	case "url":
+		return data.Url
+	case "icon":
+		return data.Icon
+	case "sort":
+		return data.Sort
+	}
+	return ""
 }
 
 func (dao *contentMenuDAO) FrontMenus() []FrontMenuData {
