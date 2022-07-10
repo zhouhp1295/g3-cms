@@ -56,7 +56,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2022-Recent htspark.site All Rights Reserved.</span>
+      <span>基于 Ruoyi-Vue 开发</span>
     </div>
   </div>
 </template>

@@ -33,7 +33,7 @@
           <el-option
             v-for="item in writerOptions"
             :key="item.id"
-            :label="item.name"
+            :label="item.label"
             :value="item.id"
           />
         </el-select>
@@ -265,7 +265,7 @@
                   <el-option
                     v-for="item in writerOptions"
                     :key="item.id"
-                    :label="item.name"
+                    :label="item.label"
                     :value="item.id"
                   />
                 </el-select>
@@ -526,9 +526,14 @@ export default {
       if (category <= 0 ) {
         return str;
       }
-      this.writerOptions.forEach(ele => {
+      this.categoryOptions.forEach(ele => {
         if (ele.id === category) {
-          str = this.getCategoryName(ele.pid) + ">" + ele.name;
+          let pStr = this.getCategoryName(ele.pid);
+          if (pStr !== "") {
+            str = pStr + ">" + ele.title;
+          } else {
+            str = ele.title;
+          }
         }
       })
       return str;
@@ -540,7 +545,7 @@ export default {
       }
       this.writerOptions.forEach(ele => {
         if (ele.id === writer) {
-          str = ele.name;
+          str = ele.label;
         }
       })
       return str;

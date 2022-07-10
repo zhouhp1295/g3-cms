@@ -4,3 +4,5 @@ log
 conf/app.ini
 *.bak
 *.db
+*.exe
+g3-*

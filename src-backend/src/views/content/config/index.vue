@@ -7,7 +7,7 @@
             <el-form-item label="网站域名" prop="host">
               <el-input v-model="form.host" />
               <el-col class="tip">
-                例: https://htoolbox.site
+                例: https://baidu.com
               </el-col>
             </el-form-item>
             <el-form-item label="网站标题" prop="title">
