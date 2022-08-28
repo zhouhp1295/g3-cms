@@ -1,8 +1,11 @@
+// Copyright (c) 554949297@qq.com . 2022-2022 . All rights reserved
+
 package service
 
 import (
 	"github.com/mojocn/base64Captcha"
-	"github.com/zhouhp1295/g3-cms/boot"
+	"github.com/zhouhp1295/g3"
+	"go.uber.org/zap"
 	"strings"
 )
 
@@ -26,7 +29,7 @@ func (service *captchaService) GetStringImg() (captchaId, captchaBase64 string) 
 	c := base64Captcha.NewCaptcha(driver, store)
 	captchaId, captchaBase64, err := c.Generate()
 	if err != nil {
-		boot.Logger.Error("GetStringImg err = %s\n", err.Error())
+		g3.ZL().Error("GetStringImg", zap.Error(err))
 	}
 	return
 }

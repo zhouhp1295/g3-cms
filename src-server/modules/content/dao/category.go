@@ -1,11 +1,15 @@
+// Copyright (c) 554949297@qq.com . 2022-2022 . All rights reserved
+
 package dao
 
 import (
 	"fmt"
+	"github.com/zhouhp1295/g3"
 	"github.com/zhouhp1295/g3-cms/boot"
 	"github.com/zhouhp1295/g3-cms/modules/content/model"
 	"github.com/zhouhp1295/g3/crud"
 	"github.com/zhouhp1295/g3/helpers"
+	"go.uber.org/zap"
 	"strings"
 )
 
@@ -153,16 +157,34 @@ func (dao *contentCategoryDAO) UpdateStatus(pk int64, status interface{}, operat
 	return true
 }
 
-func (dao *contentCategoryDAO) UpdateInBanner(pk int64, inBanner string, inBannerSort int, operator int64) bool {
-	article := new(model.ContentCategory)
-	article.Id = pk
-	article.InBanner = inBanner
-	article.InBannerSort = inBannerSort
-	article.UpdatedBy = operator
+func (dao *contentCategoryDAO) UpdateInMenu(pk int64, inMenu string, inMenuSort int, operator int64) bool {
+	category := new(model.ContentCategory)
+	category.Id = pk
+	category.InMenu = inMenu
+	category.InMenuSort = inMenuSort
+	category.UpdatedBy = operator
 
-	err := crud.DbSess().Select([]string{"in_banner", "in_banner_sort", "updated_by", "updated_at"}).Updates(article).Error
+	err := crud.DbSess().Select([]string{"in_menu", "in_menu_sort", "updated_by", "updated_at"}).Updates(category).Error
 
 	if err != nil {
+		g3.ZL().Error("database err", zap.Error(err))
+		return false
+	}
+	dao.ClearCache()
+	return true
+}
+
+func (dao *contentCategoryDAO) UpdateInBanner(pk int64, inBanner string, inBannerSort int, operator int64) bool {
+	category := new(model.ContentCategory)
+	category.Id = pk
+	category.InBanner = inBanner
+	category.InBannerSort = inBannerSort
+	category.UpdatedBy = operator
+
+	err := crud.DbSess().Select([]string{"in_banner", "in_banner_sort", "updated_by", "updated_at"}).Updates(category).Error
+
+	if err != nil {
+		g3.ZL().Error("database err", zap.Error(err))
 		return false
 	}
 	dao.ClearCache()

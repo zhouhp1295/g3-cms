@@ -1,11 +1,14 @@
+// Copyright (c) 554949297@qq.com . 2022-2022 . All rights reserved
+
 package dao
 
 import (
 	jsoniter "github.com/json-iterator/go"
-	"github.com/zhouhp1295/g3-cms/boot"
+	"github.com/zhouhp1295/g3"
 	dao2 "github.com/zhouhp1295/g3-cms/modules/system/dao"
 	"github.com/zhouhp1295/g3-cms/modules/system/model"
 	"github.com/zhouhp1295/g3/crud"
+	"go.uber.org/zap"
 )
 
 const ContentWebConfigCode = "content.web.config"
@@ -44,7 +47,7 @@ func (dao *contentConfigDAO) UpdateWebConfig(data ContentWebConfigData, operator
 	if cnt > 0 {
 		err := crud.DbSess().Where("code = ? and deleted = ?", ContentWebConfigCode, crud.FlagNo).First(mConfig).Error
 		if err != nil {
-			boot.Logger.Warn("UpdateWebConfig db err %s", err.Error())
+			g3.ZL().Error("UpdateWebConfig db err", zap.Error(err))
 			return err.Error(), false
 		}
 	} else {
@@ -53,7 +56,7 @@ func (dao *contentConfigDAO) UpdateWebConfig(data ContentWebConfigData, operator
 	var err error
 	mConfig.Value, err = jsoniter.MarshalToString(data)
 	if err != nil {
-		boot.Logger.Warn("UpdateWebConfig MarshalToString err %s", err.Error())
+		g3.ZL().Error("UpdateWebConfig MarshalToString", zap.Error(err))
 		return err.Error(), false
 	}
 	if cnt > 0 {
@@ -62,7 +65,7 @@ func (dao *contentConfigDAO) UpdateWebConfig(data ContentWebConfigData, operator
 		err = crud.DbSess().Create(mConfig).Error
 	}
 	if err != nil {
-		boot.Logger.Warn("UpdateWebConfig Save db err %s", err.Error())
+		g3.ZL().Error("UpdateWebConfig Save", zap.Error(err))
 		return err.Error(), false
 	}
 	clearAllConfigCache()

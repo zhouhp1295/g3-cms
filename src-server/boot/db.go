@@ -1,9 +1,13 @@
+// Copyright (c) 554949297@qq.com . 2022-2022 . All rights reserved
+
 package boot
 
 import (
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/zhouhp1295/g3"
 	"github.com/zhouhp1295/g3/crud"
+	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -12,8 +16,8 @@ import (
 	"gorm.io/gorm/schema"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
-	"unknwon.dev/clog/v2"
 )
 
 var (
@@ -29,10 +33,15 @@ const (
 )
 
 type GormLogger struct {
+	initLogger sync.Once
+	zLogger    *zap.Logger
 }
 
-func (*GormLogger) Printf(format string, v ...interface{}) {
-	clog.InfoTo("db", format, v...)
+func (gl *GormLogger) Printf(format string, v ...interface{}) {
+	gl.initLogger.Do(func() {
+		gl.zLogger = g3.NewLogger(App.Name+"-gorm", false)
+	})
+	gl.zLogger.Info(fmt.Sprintf(format, v...))
 }
 
 // parsePostgreSQLHostPort parses given input in various forms defined in
@@ -77,7 +86,7 @@ func parseDSN(cfg DatabaseConfig) (dsn string, err error) {
 				url.QueryEscape(cfg.User), url.QueryEscape(cfg.Password), host, port, cfg.Name, concate, cfg.SSLMode)
 		}
 	case SQLite3:
-		dsn = "file:" + EnsureAbs(cfg.Name+".db") + "?cache=shared&mode=rwc&_busy_timeout=9999999"
+		dsn = "file:" + g3.AssetPath(cfg.Name+".db") + "?cache=shared&mode=rwc&_busy_timeout=9999999"
 	default:
 		return "", errors.Errorf("unrecognized dialect: %s", cfg.Type)
 	}
@@ -121,14 +130,9 @@ func TestDatabaseConn(cfg DatabaseConfig) (*gorm.DB, error) {
 }
 
 func initGormDB(w logger.Writer) {
-	level := logger.Info
-	//level := logger.Warn
-	if IsProdMode() {
-		level = logger.Error
-	}
-	// NOTE: AutoMigrate does not respect logger passed in gorm.Config.
+	level := logger.Warn
 	logger.Default = logger.New(w, logger.Config{
-		SlowThreshold: 100 * time.Millisecond,
+		SlowThreshold: 200 * time.Millisecond,
 		LogLevel:      level,
 	})
 	db, err := openDB(DatabaseCfg, &gorm.Config{

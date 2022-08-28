@@ -1,14 +1,14 @@
+// Copyright (c) 554949297@qq.com . 2022-2022 . All rights reserved
+
 package content
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/zhouhp1295/g3-cms/boot"
-	"github.com/zhouhp1295/g3-cms/modules/content/dao"
+	"github.com/zhouhp1295/g3"
 	"github.com/zhouhp1295/g3-cms/modules/content/migrations"
 	"github.com/zhouhp1295/g3-cms/modules/content/model"
-	"github.com/zhouhp1295/g3-cms/modules/content/web"
+	_ "github.com/zhouhp1295/g3-cms/modules/content/routers"
 	"github.com/zhouhp1295/g3/crud"
-	"net/http"
+	"go.uber.org/zap"
 )
 
 func DoMigrate() {
@@ -29,17 +29,6 @@ func SyncTables() {
 	}
 	err := crud.SyncTables(crud.DbSess(), tables)
 	if err != nil {
-		boot.Logger.Fatal("AutoMigrate Content Database, err = %s", err.Error())
+		g3.ZL().Fatal("AutoMigrate Content Database", zap.Error(err))
 	}
-}
-
-func InitWeb() {
-	//页面
-	boot.WebPage("/robots.txt", robotsHandler)
-	//初始化 todo 根据设置的模板引擎去设置 web or api
-	web.Init()
-}
-
-func robotsHandler(ctx *gin.Context) {
-	ctx.Data(http.StatusOK, "text/plain; charset=utf-8", []byte(dao.ContentConfigDao.WebConfig().Robots))
 }

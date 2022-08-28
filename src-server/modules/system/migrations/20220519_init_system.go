@@ -1,11 +1,14 @@
+// Copyright (c) 554949297@qq.com . 2022-2022 . All rights reserved
+
 package migrations
 
 import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/pkg/errors"
-	"github.com/zhouhp1295/g3-cms/boot"
+	"github.com/zhouhp1295/g3"
 	"github.com/zhouhp1295/g3-cms/modules/system/model"
 	"github.com/zhouhp1295/g3/crud"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -120,12 +123,12 @@ func M20220519InitSystem() func() error {
 			//初始化字典数据
 			err := CreateSysDictType(tx, baseSysDictTypeData)
 			if err != nil {
-				boot.Logger.Fatal("20220519_init_system , err = %s", err.Error())
+				g3.ZL().Fatal("20220519_init_system", zap.Error(err))
 				return err
 			}
 			err = CreateSysDictData(tx, baseSysDictDataData)
 			if err != nil {
-				boot.Logger.Fatal("20220519_init_system , err = %s", err.Error())
+				g3.ZL().Fatal("20220519_init_system", zap.Error(err))
 				return err
 			}
 			//初始化新密码
@@ -138,12 +141,12 @@ func M20220519InitSystem() func() error {
 			//初始化角色
 			err = CreateSysRoles(tx, baseRoleData)
 			if err != nil {
-				boot.Logger.Fatal("20220519_init_system , err = %s", err.Error())
+				g3.ZL().Fatal("20220519_init_system", zap.Error(err))
 				return err
 			}
 			err = CreateSystemMenus(tx, baseMenuData)
 			if err != nil {
-				boot.Logger.Fatal("20220519_init_system , err = %s", err.Error())
+				g3.ZL().Fatal("20220519_init_system", zap.Error(err))
 				return err
 			}
 			return nil

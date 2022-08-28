@@ -1,0 +1,3 @@
+2022-08-28 23:22:11.542	[info]	boot/app.go:132	存储空间	{"Storager": {}}
+2022-08-28 23:22:58.543	[info]	boot/app.go:132	存储空间	{"Storager": {}}
+2022-08-28 23:22:58.564	[info]	boot/app.go:140	Application Start	{"Addr": "0.0.0.0", "Port": "3200"}

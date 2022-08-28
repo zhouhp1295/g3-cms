@@ -1,22 +1,17 @@
+// Copyright (c) 554949297@qq.com . 2022-2022 . All rights reserved
+
 package boot
 
 import (
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/zhouhp1295/g3"
 	"github.com/zhouhp1295/g3-cms/utils"
 	"gopkg.in/ini.v1"
 	"strings"
-	"unknwon.dev/clog/v2"
 )
 
-var (
-	App struct {
-		Product     string
-		ProductName string
-		Version     string
-		RunMode     string
-	}
-)
+var File *ini.File
 
 // DatabaseConfig 数据库设置
 type DatabaseConfig struct {
@@ -32,27 +27,6 @@ type DatabaseConfig struct {
 
 // DatabaseCfg 数据库设置
 var DatabaseCfg DatabaseConfig
-
-type loggerConfig struct {
-	RootPath     string
-	LogRotate    bool
-	DailyRotate  bool
-	MaxSizeShift int64
-	MaxLines     int64
-	MaxDays      int64
-}
-
-func (c *loggerConfig) ToFileRotationConfig() clog.FileRotationConfig {
-	return clog.FileRotationConfig{
-		Rotate:   c.LogRotate,
-		Daily:    c.DailyRotate,
-		MaxSize:  c.MaxSizeShift * 1024 * 1024,
-		MaxDays:  c.MaxDays,
-		MaxLines: c.MaxLines,
-	}
-}
-
-var LoggerCfg loggerConfig
 
 type serverConfig struct {
 	Domain   string
@@ -81,7 +55,7 @@ type storageConfig struct {
 func (cfg *storageConfig) check() bool {
 	if cfg.Type == "fs" {
 		if len(cfg.Path) == 0 {
-			cfg.Path = HomeDir()
+			cfg.Path = g3.HomeDir()
 		}
 	}
 	if len(cfg.Path) == 0 {
@@ -109,17 +83,17 @@ func loadConfigs() {
 	var err error
 	var iniPath string
 	if IsInstalled() {
-		iniPath = AssetPath("conf/app.ini")
+		iniPath = g3.AssetPath("conf/app.ini")
 	} else {
-		iniPath = AssetPath("conf/app.example.ini")
+		iniPath = g3.AssetPath("conf/app.example.ini")
 	}
-	if utils.IsExist(iniPath) {
-		File, err = ini.LoadSources(ini.LoadOptions{
-			IgnoreInlineComment: true,
-		}, iniPath)
-	} else {
+	if !utils.IsExist(iniPath) {
 		panic("未找到配置文件: " + iniPath)
 	}
+
+	File, err = ini.LoadSources(ini.LoadOptions{
+		IgnoreInlineComment: true,
+	}, iniPath)
 
 	if err != nil {
 		panic(errors.Wrap(err, "配置文件解析失败: "+iniPath))
@@ -136,24 +110,10 @@ func loadConfigs() {
 	}
 
 	// ***************************
-	// ----- ServerCfg settings -----
-	// ***************************
-	if err = File.Section("server").MapTo(&ServerCfg); err != nil {
-		panic(errors.Wrap(err, "配置解析失败: server"))
-	}
-
-	// ***************************
 	// ----- JwtCfg settings -----
 	// ***************************
 	if err = File.Section("jwt").MapTo(&JwtCfg); err != nil {
 		panic(errors.Wrap(err, "配置解析失败: jwt"))
-	}
-
-	// ***************************
-	// ----- LoggerCfg settings -----
-	// ***************************
-	if err = File.Section("logger").MapTo(&LoggerCfg); err != nil {
-		panic(errors.Wrap(err, "配置解析失败: logger"))
 	}
 
 	// ***************************

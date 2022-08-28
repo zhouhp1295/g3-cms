@@ -1,9 +1,12 @@
+// Copyright (c) 554949297@qq.com . 2022-2022 . All rights reserved
+
 package migrations
 
 import (
-	"github.com/zhouhp1295/g3-cms/boot"
+	"github.com/zhouhp1295/g3"
 	"github.com/zhouhp1295/g3-cms/modules/system/migrations"
 	"github.com/zhouhp1295/g3/crud"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -60,7 +63,7 @@ func M20220531InitContent() func() error {
 		return rootDB.Transaction(func(tx *gorm.DB) error {
 			err := migrations.CreateSystemMenus(tx, contentMenuData20220531)
 			if err != nil {
-				boot.Logger.Fatal("20220531_init_content , err = %s", err.Error())
+				g3.ZL().Fatal("20220531_init_content", zap.Error(err))
 				return err
 			}
 			return nil
